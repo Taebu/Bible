@@ -40,13 +40,14 @@ public class Bible {
 //	location=location;
 //	final static String BIBLE_DB_PATH = "C:\\Bible\\GAE\\";
 	String keyword;	//검색어
-	String book;			//책
-	int chapter;			//장
-	int verse;				//절
+	String book;	//책
+	int chapter;	//장
+	int verse;	//절
 
-	final static String BIBLE_DB_PATH = "D:\\local\\Bible\\GAE\\";
-	String location=BIBLE_DB_PATH;
-
+//	final static String BIBLE_DB_PATH = "D:\\local\\Bible\\GAE\\";
+	String bibledbpath; //db 경로
+	String location;		//location
+	boolean isWin;	//isWindows or isUnix
 	final static String FIND_PATTERN = "([가-힣]+)\\s*([0-9]+):([0-9]+)-([0-9]+)";
 	final static String FIND_PATTERN2 = "[0-9\\.tx\\-]";
 	final static String FIND_PATTERN3 = "\\<[^\\>]+\\>";
@@ -65,9 +66,22 @@ public class Bible {
 	int getSearch_cnt(){
 		return this.search_cnt;
 	}
-
+	
 	void setSearch_cnt(int v){
 		this.search_cnt=v;
+	}
+	
+	void setBibledbpath(String str){
+		this.bibledbpath=str+"\\\\";
+		this.location=str;
+	}
+
+	String getBibledbpath(){
+		return this.bibledbpath;
+	}
+
+	boolean isIBM(String str){
+		return str.indexOf("\\")>-1;
 	}
 
 	/* getKeyword 
@@ -107,12 +121,26 @@ public class Bible {
 		boolean isKeywordSearch = false;
 		
 		Bible bi = new Bible();
+		String location=new java.io.File( "." ).getCanonicalPath();
+		boolean isIBM=bi.isIBM(location);
 
+		if(isIBM)
+		bi.setBibledbpath(location.replace("\\", "\\\\"));
+		else
+		bi.setBibledbpath(location.replace("//", "////"));
+
+		
 		if (args.length == 0) {
 			// throw new RuntimeException("");
 //			System.out.println("왜 안되??");
 //			System.out.println(bi.getTest());
 			showUsage();
+			System.out.println(bi.getBibledbpath());
+			String os_ver=System.getProperty("os.name");
+			
+			System.out.println(os_ver);
+
+			System.out.println(bi.isIBM(bi.getBibledbpath())?"IBM":"UNIX");
 
 			return;
 		}
@@ -182,7 +210,7 @@ public class Bible {
 				for(int j=0;j<66;j++) {
 					String strFileName=arrTables[0][j];
 					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(BIBLE_DB_PATH + strFileName + ".txt"));
+					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
 					int i=0;
 					while ((s = in.readLine()) != null) {
 						if (s.equals("")){
@@ -199,7 +227,7 @@ public class Bible {
 				for(int j=0;j<66;j++) {
 					String strFileName=arrTables[0][j];
 					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(BIBLE_DB_PATH + strFileName + ".txt"));
+					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
 					int i=0;
 					while ((s = in.readLine()) != null) {
 						if (s.equals("")){
@@ -216,7 +244,7 @@ public class Bible {
 				for(int j=0;j<66;j++) {
 					String strFileName=arrTables[0][j];
 					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(BIBLE_DB_PATH + strFileName + ".txt"));
+					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
 					int i=0;
 					while ((s = in.readLine()) != null) {
 						if (s.equals("")){
@@ -232,7 +260,7 @@ public class Bible {
 				for(int j=0;j<66;j++) {
 					String strFileName=arrTables[0][j];
 					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(BIBLE_DB_PATH + strFileName + ".txt"));
+					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
 					int i=0;
 					while ((s = in.readLine()) != null) {
 						if (s.equals("")){
@@ -338,7 +366,7 @@ public class Bible {
 				//			 for(int j=0;j<66;j++) {
 				//			 strFileName=arrTables[0][j];
 				//			int old_i1=0,old_i2=0,i1,i2;
-				BufferedReader in = new BufferedReader(new FileReader(BIBLE_DB_PATH + strFileName + ".txt"));
+				BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
 
 				while ((s = in.readLine()) != null) {
 					if (s.equals("")/*|| s.charAt(0) == '#'*/) {
