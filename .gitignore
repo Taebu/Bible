@@ -1,4 +1,6 @@
 /temp/
 /GAE/
 *.txt
-*.class
+*.7z
+*.zip
+*.class*
