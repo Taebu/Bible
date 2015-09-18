@@ -39,6 +39,11 @@ public class Bible {
 	
 //	location=location;
 //	final static String BIBLE_DB_PATH = "C:\\Bible\\GAE\\";
+	String keyword;	//검색어
+	String book;			//책
+	int chapter;			//장
+	int verse;				//절
+
 	final static String BIBLE_DB_PATH = "D:\\local\\Bible\\GAE\\";
 	String location=BIBLE_DB_PATH;
 
