@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 /*
-
+Location : D:\local\Bible\GAE
 오류유형: 2014.12.19
 오류1: ?오류
 오류2: 탭으로 구분되지 않는 부분이 있었음.
