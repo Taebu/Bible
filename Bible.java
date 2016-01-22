@@ -14,7 +14,7 @@ Location : D:\local\Bible\GAE
 public class Bible {
 
 	final static String[][] arrTables = {
-		{ "1-01gen", "1-02출애굽기", "1-03레위기", "1-04민수기", "1-05신명기",
+		{ "1-01창세기", "1-02출애굽기", "1-03레위기", "1-04민수기", "1-05신명기",
 			"1-06여호수아", "1-07사사기", "1-08룻기", "1-09사무엘상", "1-10사무엘하",
 			"1-11열왕기상", "1-12열왕기하", "1-13역대상", "1-14역대하", "1-15에스라",
 			"1-16느헤미야", "1-17에스더", "1-18욥기", "1-19시편", "1-20잠언",
@@ -22,7 +22,7 @@ public class Bible {
 			"1-26에스겔", "1-27다니엘", "1-28호세아", "1-29요엘", "1-30아모스",
 			"1-31오바댜", "1-32요나", "1-33미가", "1-34나훔", "1-35하박국",
 			"1-36스바냐", "1-37학개", "1-38스가랴", "1-39말라기", "2-01마태복음",
-			"2-02마가복음", "2-03누가복음", "2-04요한복음", "2-05사도행전", "2-06Rom",
+			"2-02마가복음", "2-03누가복음", "2-04요한복음", "2-05사도행전", "2-06로마서",
 			"2-07고린도전서", "2-08고린도후서", "2-09갈라디아서", "2-10에베소서",
 			"2-11빌립보서", "2-12골로새서", "2-13데살로니가전서", "2-14데살로니가후서",
 			"2-15디모데전서", "2-16디모데후서", "2-17디도서", "2-18빌레몬서",
@@ -44,14 +44,16 @@ public class Bible {
 	int chapter;	//장
 	int verse;	//절
 
-//	final static String BIBLE_DB_PATH = "D:\\local\\Bible\\GAE\\";
+    //final static String BIBLE_DB_PATH = "D:\\local\\Bible\\GAE\\";
 	String bibledbpath; //db 경로
 	String location;		//location
 	boolean isWin;	//isWindows or isUnix
 	final static String FIND_PATTERN = "([가-힣]+)\\s*([0-9]+):([0-9]+)-([0-9]+)";
 	final static String FIND_PATTERN2 = "[0-9\\.tx\\-]";
-	final static String FIND_PATTERN3 = "\\<[^\\>]+\\>";
+	final static String FIND_PATTERN3 = "(\\<[^\\>]+\\>)";
 	final static String FIND_PATTERN4 = "[0-9]";
+	/* 소 제목 패턴 */
+	final static String FIND_PATTERN5 = "(\\<[^\\>]+\\>)(.+)";
 	int search_cnt=0;	
 	
 	/*객체 지향 형으로 변경 
@@ -72,7 +74,7 @@ public class Bible {
 	}
 	
 	void setBibledbpath(String str){
-		String concatStr=isIBM(str)?"\\\\":"//";
+		String concatStr=isIBM(str)?"\\\\":"/";
 		this.bibledbpath=str+""+concatStr;
 		this.location=this.bibledbpath;
 	}
@@ -132,7 +134,7 @@ public class Bible {
 		if(isIBM)
 		bi.setBibledbpath(location.replace("\\", "\\\\"));
 		else
-		bi.setBibledbpath(location.replace("//", "////"));
+		bi.setBibledbpath(location.replace("/", "/"));
 
 		
 		if (args.length == 0) {
@@ -153,9 +155,11 @@ public class Bible {
 			System.out.println("옵션 있음.");
 			return;
 		}
+
 		if(args.length==1)
 		{
 			searchKeyWord1 = args[0];
+
 			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
 				isKeywordSearch = true;
 			}
@@ -393,7 +397,14 @@ public class Bible {
 						//				}
 						//				old_i1 = i1;
 						//				old_i2 = i2;
-						ht.put(temp[0], temp[1]); // ht에 넣음
+						if(temp.length>2){
+							//temp[1]=temp[1].replaceAll("<","&gt;");
+							//temp[1]=temp[1].replaceAll(">","&gt;");
+							ht.put(temp[0],temp[1]+" "+temp[2]);// ht tab 이상 있는 
+						}else{
+							//temp[1]=temp[1].replaceAll("<","&gt;");
+							ht.put(temp[0], temp[1]); // ht에 넣음
+						}
 						bFinded = true;
 					}
 					else {
@@ -401,7 +412,7 @@ public class Bible {
 							break;
 						}
 					}
-				}
+				}         
 				in.close();
 				//			 }
 
@@ -442,7 +453,12 @@ public class Bible {
 				if (kor == null || kor == "") {
 					break;
 				}
-				c.append(i + (" " + kor.replaceAll(FIND_PATTERN3,"")).replaceAll("  "," ") + "\n");
+				//c.append(i + (" " + kor.replaceAll(FIND_PATTERN3,"")).replaceAll("  "," ") + "\n");
+				if(kor.indexOf("<")>-1)
+				{
+					c.append(kor.replaceAll(FIND_PATTERN5,"$1")+ "\n");
+				}
+				c.append(i + " " + kor.replaceAll(FIND_PATTERN3,"").replaceAll("  "," ") + "\n");
 				lstNum = i;
 			}
 
