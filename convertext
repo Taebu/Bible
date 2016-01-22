@@ -1,0 +1,11 @@
+find "$1" -name "*.smi" -o -name "*.srt" -o -name "*.txt" | while read filename
+do
+tempName=${filename}~temp~.txt
+mv "$filename" "$tempName"
+iconv -c -f euc-kr -t utf-8 "$tempName" > "$filename"
+rm "$tempName"
+done
+
+# 사용법
+# sh convertext GAE 
+# GAE는 폴더명
