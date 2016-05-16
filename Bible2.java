@@ -13,7 +13,7 @@ Location : D:\local\Bible\GAE
 오류3: 절이 순차적으로 증가되지 않은 부분이 있었음.
 
 */
-public class Bible2 {
+public class Bible {
 
 	final static String[][] arrTables = {
 		{ "1-01창세기", "1-02출애굽기", "1-03레위기", "1-04민수기", "1-05신명기",
@@ -224,7 +224,8 @@ public class Bible2 {
 				for(int j=0;j<66;j++) {
 					String strFileName=arrTables[0][j];
 					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
+//					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
+					BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(bi.getBibledbpath() + strFileName + ".txt"),"UTF8"));
 					int i=0;
 					while ((s = in.readLine()) != null) {
 						if (s.equals("")){
@@ -241,7 +242,8 @@ public class Bible2 {
 				for(int j=0;j<66;j++) {
 					String strFileName=arrTables[0][j];
 					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
+//					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
+					BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(bi.getBibledbpath() + strFileName + ".txt"),"UTF8"));
 					int i=0;
 					while ((s = in.readLine()) != null) {
 						if (s.equals("")){
@@ -258,7 +260,8 @@ public class Bible2 {
 				for(int j=0;j<66;j++) {
 					String strFileName=arrTables[0][j];
 					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
+//					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
+					BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(bi.getBibledbpath() + strFileName + ".txt"),"UTF8"));
 					int i=0;
 					while ((s = in.readLine()) != null) {
 						if (s.equals("")){
@@ -274,7 +277,8 @@ public class Bible2 {
 				for(int j=0;j<66;j++) {
 					String strFileName=arrTables[0][j];
 					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
+//					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
+					BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(bi.getBibledbpath() + strFileName + ".txt"),"UTF8"));
 					int i=0;
 					while ((s = in.readLine()) != null) {
 						if (s.equals("")){
@@ -548,4 +552,3 @@ git ...
 */
 	}	
 }
-
