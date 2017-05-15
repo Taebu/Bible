@@ -411,7 +411,7 @@ public class Program
 			searchstr+=" "+args[i].trim();
 			}
 			searchstr=searchstr.trim();
-			sql="select * from bible where content like '%"+searchstr+"%';";
+			sql="select *,replace(content,'"+searchstr+"','<b>"+searchstr+"</b>') content2 from bible where content like '%"+searchstr+"%';";
 			ResultSet rs=statement.executeQuery(sql);
 			i=0;
 			while(rs.next())
@@ -421,12 +421,12 @@ public class Program
 			
 			String  chapters = rs.getString("chapter");
 			String  verse = rs.getString("verse");
-			String  content = rs.getString("content");
+			String  content2 = rs.getString("content2");
 
 			System.out.print("[ "+version_name+" ]");
 			System.out.print(arrTables[1][ibook]+" ");
 	         System.out.print(chapters+":"+verse+" ");
-	         System.out.print(content);
+	         System.out.print(content2);
 	         System.out.println();
 			 i++;
 			}
