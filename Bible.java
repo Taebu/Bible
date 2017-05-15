@@ -116,6 +116,8 @@ public class Program
 		return retVal;
 	}
 
+
+	
 	String get_version(String[] args)
 	{
 		String retVal="KORNKRV.sqlite";
@@ -193,7 +195,7 @@ public class Program
 		}
 		return retVal; 
 	}
-	
+
 	String get_chapter(String[] args)
 	{
 		String retVal="1";
@@ -261,13 +263,13 @@ public class Program
 
 	public static void main(String[] args) throws Exception
 	{
-
 		Connection connection = null;
 		Statement statement = null;
 		Program pg=new Program();
+		
 		String version=pg.get_version(args);
 		String version_name=pg.get_version_name(args);
-		System.out.println(version);
+
 		String book="";
 		String chapter=pg.get_chapter(args);
 		String s = "";
@@ -326,9 +328,32 @@ public class Program
 		/* Table1이라는 테이블 안에 field1(text형), field2(integer형)라는 이름의 필드가 있다고 가정합니다. */
 		//System.out.println("select * from Bible where book="+book+" and  chapter="+chapter+";");
 		//ResultSet rs = statement.executeQuery("select * from Bible where book="+book+" and  chapter="+chapter+" and ;");
-		ResultSet rs = statement.executeQuery("select * from bible where book='"+book+"' and chapter='"+searchStr2+"' and verse>='"+searchStr3+"' and verse<='"+searchStr4+"';");
+		String result="";
+		String sql="";
+		if(searchStr4.equals("999")){
+			sql="select verse from bible where book='"+book+"' and chapter='"+searchStr2+"' order by verse desc limit 1;";
+			ResultSet rsv=statement.executeQuery(sql);
+			while(rsv.next())
+			{
+				 searchStr4=rsv.getString("verse");
+			}
+			/* resultSet 닫기 */
+			rsv.close();
+		    result=pg.strBookIndexFullName+" "+searchStr2+"장 "+searchStr3+"~"+searchStr4+"절 ["+version_name+"]";	
+		}else if(searchStr3.equals(searchStr4)){
+			/* 1절 검색 */
+			result=pg.strBookIndexFullName+" "+searchStr2+"장 "+searchStr3+"절 ["+version_name+"]";
+		}else{
+			result=pg.strBookIndexFullName+" "+searchStr2+"장 "+searchStr3+"~"+searchStr4+"절 ["+version_name+"]";
+		}
+
+		sql="select * from bible where book='"+book;
+		sql+="' and chapter='"+searchStr2;
+		sql+="' and verse>='"+searchStr3;
+		sql+="' and verse<='"+searchStr4+"';";
+		ResultSet rs = statement.executeQuery(sql);
 		/* 결과를 첫 행부터 끝 행까지 반복하며 출력합니다. */
-        System.out.println(pg.strBookIndexFullName+" "+searchStr2+"장 "+searchStr3+"~"+searchStr4+"절 ["+version_name+"]");
+        System.out.println(result);
 		while(rs.next())
 		{
 			String  chapters = rs.getString("chapter");
