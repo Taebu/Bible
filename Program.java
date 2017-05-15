@@ -263,6 +263,72 @@ public class Program
 		return retVal;
 	}
 
+
+	/* iskeyword
+	키워드인지 구분
+	*/
+	boolean isKeyword(String[] args)
+	{
+		boolean isKeywordSearch=false;
+		String searchKeyWord1="", searchKeyWord2="", searchKeyWord3="", searchKeyWord4="";	
+		if(args.length==1)
+		{
+			searchKeyWord1 = args[0];
+
+			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
+				isKeywordSearch = true;
+			}
+		}
+		else if(args.length==2)
+		{
+			searchKeyWord1 = args[0];
+			searchKeyWord2 = args[1];
+			
+			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
+				isKeywordSearch = true;
+			}
+			if(isKeywordSearch == false && searchKeyWord2.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord2)) {
+				isKeywordSearch = true;
+			}
+		}
+		else if(args.length==3)
+		{
+			searchKeyWord1 = args[0];
+			searchKeyWord2 = args[1];
+			searchKeyWord3 = args[2];
+			
+			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
+				isKeywordSearch = true;
+			}
+			if(isKeywordSearch == false && searchKeyWord2.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord2)) {
+				isKeywordSearch = true;
+			}
+			if(isKeywordSearch == false && searchKeyWord3.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord3)) {
+				isKeywordSearch = true;
+			}
+		}
+		else if(4 <= args.length)
+		{
+			searchKeyWord1 = args[0];
+			searchKeyWord2 = args[1];
+			searchKeyWord3 = args[2];
+			searchKeyWord4 = args[3];
+			
+			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
+				isKeywordSearch = true;
+			}
+			if(isKeywordSearch == false && searchKeyWord2.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord2)) {
+				isKeywordSearch = true;
+			}
+			if(isKeywordSearch == false && searchKeyWord3.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord3)) {
+				isKeywordSearch = true;
+			}
+			if(isKeywordSearch == false && searchKeyWord4.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord4)) {
+				isKeywordSearch = true;
+			}
+		}
+		return isKeywordSearch;
+	}
 	public static void main(String[] args) throws Exception
 	{
 		Connection connection = null;
@@ -276,7 +342,7 @@ public class Program
 		String chapter=pg.get_chapter(args);
 		String s = "";
 		String searchStr1="",searchStr2="",searchStr3="",searchStr4="";
-		String searchKeyWord1="", searchKeyWord2="", searchKeyWord3="", searchKeyWord4="";
+
 
 		String tmpA="";
 
@@ -285,7 +351,7 @@ public class Program
 		* 기본값은 'false'로 구절 검색이다. 
 		*/
 		boolean isKeywordSearch = false;
-		
+		isKeywordSearch = pg.isKeyword(args);
 		/* 장절 검색 */
 		tmpA=pg.search_verse(args);
 
@@ -304,6 +370,9 @@ public class Program
 		searchStr2 = tmpA.replaceAll(FIND_PATTERN, "$2");
 		searchStr3 = tmpA.replaceAll(FIND_PATTERN, "$3");
 		searchStr4 = tmpA.replaceAll(FIND_PATTERN, "$4");
+
+
+
 		try
 		{
 			/* SQLite JDBC 클래스가 있는지 검사하는 부분입니다. */
@@ -331,6 +400,41 @@ public class Program
 		//ResultSet rs = statement.executeQuery("select * from Bible where book="+book+" and  chapter="+chapter+" and ;");
 		String result="";
 		String sql="";
+
+		
+		
+		/* 검색어 검색*/
+		if(isKeywordSearch){
+			String searchstr="";
+			int i=0;
+			for(i=0;i<args.length;i++){
+			searchstr+=" "+args[i].trim();
+			}
+			searchstr=searchstr.trim();
+			sql="select * from bible where content like '%"+searchstr+"%';";
+			ResultSet rs=statement.executeQuery(sql);
+			i=0;
+			while(rs.next())
+			{
+				
+			int  ibook = rs.getInt("book");
+			
+			String  chapters = rs.getString("chapter");
+			String  verse = rs.getString("verse");
+			String  content = rs.getString("content");
+
+			System.out.print("[ "+version_name+" ]");
+			System.out.print(arrTables[1][ibook]+" ");
+	         System.out.print(chapters+":"+verse+" ");
+	         System.out.print(content);
+	         System.out.println();
+			 i++;
+			}
+			System.out.println("총 검색 결과 "+i+"개가 검색 되었습니다.");
+		return;
+		}
+
+		/* 장절 검색*/
 		if(searchStr4.equals("999")){
 			sql="select verse from bible where book='"+book+"' and chapter='"+searchStr2+"' order by verse desc limit 1;";
 			ResultSet rsv=statement.executeQuery(sql);
