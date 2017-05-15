@@ -1,125 +1,281 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Hashtable;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
-/*
-Location : D:\local\Bible\GAE
-오류유형: 2014.12.19
-오류1: ?오류
-오류2: 탭으로 구분되지 않는 부분이 있었음.
-오류3: 절이 순차적으로 증가되지 않은 부분이 있었음.
+public class Program
+{
+	final static String[][] arrVersion={
+	{
+	"개역한글판(korHRV)",  
+	"개역개정판(korNKRV)", 
+	"새번역(korNRSV)", 
+	"공동번역개정판(korNKCB)", 
+	"개역개정 국한문(kchNRKV)", 
+	"개역한글판 국한문(kchHRV)", 
+	"바른성경(korKTV)", 
+	"바른성경국한문(kchKTV)", 
+	"가톨릭성경(korCath)", 
+	"우리말성경(korDOB)", 
+	"쉬운성경(korEASY)", 
+	"킹제임스흠정역(korHKJV)", 
+	"한글킹제임스(korKKJV)", 
+	"현대인의 성경(korKLB)", 
+	"현대어성경(korTKV)", 
+	"ESV", 
+	"GNT", 
+	"HCSB", 
+	"KJV", 
+	"MSG", 
+	"ISV", 
+	"NASB", 
+	"NIV", 
+	"NKJV", 
+	"NLT", 
+	"NRSV", 
+	"TNIV"
+	},
+	{
+	"korHRV",
+	"korNKRV", 
+	"korNRSV", 
+	"korNKCB", 
+	"kchNRKV", 
+	"kchHRV", 
+	"korKTV", 
+	"kchKTV", 
+	"korCath", 
+	"korDOB", 
+	"korEASY", 
+	"korHKJV", 
+	"korKKJV", 
+	"korKLB", 
+	"korTKV", 
+	"engESV", 
+	"engGNT", 
+	"engHCSB", 
+	"engKJV", 
+	"engMSG", 
+	"engISV", 
+	"engNASB", 
+	"engNIV", 
+	"engNKJV", 
+	"engNLT", 
+	"engNRSV", 
+	"engTNIV"
+	}
+	};
 
-*/
-public class Bible {
-
-	final static String[][] arrTables = {
-		{ "1-01창세기", "1-02출애굽기", "1-03레위기", "1-04민수기", "1-05신명기",
-			"1-06여호수아", "1-07사사기", "1-08룻기", "1-09사무엘상", "1-10사무엘하",
-			"1-11열왕기상", "1-12열왕기하", "1-13역대상", "1-14역대하", "1-15에스라",
-			"1-16느헤미야", "1-17에스더", "1-18욥기", "1-19시편", "1-20잠언",
-			"1-21전도서", "1-22아가", "1-23이사야", "1-24예레미야", "1-25예레미야애가",
-			"1-26에스겔", "1-27다니엘", "1-28호세아", "1-29요엘", "1-30아모스",
-			"1-31오바댜", "1-32요나", "1-33미가", "1-34나훔", "1-35하박국",
-			"1-36스바냐", "1-37학개", "1-38스가랴", "1-39말라기", "2-01마태복음",
-			"2-02마가복음", "2-03누가복음", "2-04요한복음", "2-05사도행전", "2-06로마서",
-			"2-07고린도전서", "2-08고린도후서", "2-09갈라디아서", "2-10에베소서",
-			"2-11빌립보서", "2-12골로새서", "2-13데살로니가전서", "2-14데살로니가후서",
-			"2-15디모데전서", "2-16디모데후서", "2-17디도서", "2-18빌레몬서",
-			"2-19히브리서", "2-20야고보서", "2-21베드로전서", "2-22베드로후서",
-			"2-23요한일서", "2-24요한이서", "2-25요한삼서", "2-26유다서", "2-27요한계시록" },
-			{ "창", "출", "레", "민", "신", "수", "삿", "룻", "삼상", "삼하", "왕상", "왕하",
-				"대상", "대하", "스", "느", "에", "욥", "시", "잠", "전", "아", "사",
-				"렘", "애", "겔", "단", "호", "욜", "암", "옵", "욘", "미", "나", "합",
-				"습", "학", "슥", "말", "마", "막", "눅", "요", "행", "롬", "고전",
-				"고후", "갈", "엡", "빌", "골", "살전", "살후", "딤전", "딤후", "딛", "몬",
-				"히", "약", "벧전", "벧후", "요일", "요이", "요삼", "유", "계" } };
-
-//	final static String location=new java.io.File( "." ).getCanonicalPath().replace("\\", "\\\\");
 	
-//	location=location;
-//	final static String BIBLE_DB_PATH = "C:\\Bible\\GAE\\";
-	String keyword;	//검색어
-	String book;	//책
-	int chapter;	//장
-	int verse;	//절
+	final static String[][] arrTables = {
+	{ "0","창세기", "출애굽기", "레위기", "민수기", "신명기",
+		"여호수아", "사사기", "룻기", "사무엘상", "사무엘하",
+		"열왕기상", "열왕기하", "역대상", "역대하", "에스라",
+		"느헤미야", "에스더", "욥기", "시편", "잠언",
+		"전도서", "아가", "이사야", "예레미야", "예레미야애가",
+		"에스겔", "다니엘", "호세아", "요엘", "아모스",
+		"오바댜", "요나", "미가", "나훔", "하박국",
+		"스바냐", "학개", "스가랴", "말라기", "마태복음",
+		"마가복음", "누가복음", "요한복음", "사도행전", "로마서",
+		"고린도전서", "고린도후서", "갈라디아서", "에베소서",
+		"빌립보서", "골로새서", "데살로니가전서", "데살로니가후서",
+		"디모데전서", "디모데후서", "디도서", "빌레몬서",
+		"히브리서", "야고보서", "베드로전서", "베드로후서",
+		"요한일서", "요한이서", "요한삼서", "유다서", "요한계시록","새교독문"},
+		{ "0","창", "출", "레", "민", "신", "수", "삿", "룻", "삼상", "삼하", "왕상", "왕하",
+			"대상", "대하", "스", "느", "에", "욥", "시", "잠", "전", "아", "사",
+			"렘", "애", "겔", "단", "호", "욜", "암", "옵", "욘", "미", "나", "합",
+			"습", "학", "슥", "말", "마", "막", "눅", "요", "행", "롬", "고전",
+			"고후", "갈", "엡", "빌", "골", "살전", "살후", "딤전", "딤후", "딛", "몬",
+			"히", "약", "벧전", "벧후", "요일", "요이", "요삼", "유", "계","교"} };
 
-    //final static String BIBLE_DB_PATH = "D:\\local\\Bible\\GAE\\";
-	String bibledbpath; //db 경로
-	String location;		//location
-	boolean isWin;	//isWindows or isUnix
+	
+
 	final static String FIND_PATTERN = "([가-힣]+)\\s*([0-9]+):([0-9]+)-([0-9]+)";
 	final static String FIND_PATTERN2 = "[0-9\\.tx\\-]";
 	final static String FIND_PATTERN3 = "(\\<[^\\>]+\\>)";
-	final static String FIND_PATTERN4 = "[0-9]";
-	/* 소 제목 패턴 */
-	final static String FIND_PATTERN5 = "(\\<[^\\>]+\\>)(.+)";
-	int search_cnt=0;	
+	final static String FIND_PATTERN4 = "[0-9]";	
 	
-	/*객체 지향 형으로 변경 
-	2015-09-10 (목)
-	getGroup
-	*/
-	String getTest(){
-		String str="get Test String";
-		return str;
+	String strBookIndexName="";
+	String strBookIndexFullName="";
+	String strBookIndexChapter="";
+
+	String get_where(String str)
+	{
+		String retVal="1";
+		String chapter="";
+
+		chapter = str;
+
+		for (int i = 0; i < arrTables[1].length; i++) {
+			if(chapter.equals(arrTables[1][i]))
+			{
+				retVal=String.valueOf(i);;
+				this.strBookIndexFullName=arrTables[0][i];
+			}
+		}
+		return retVal;
+	}
+
+	String get_version(String[] args)
+	{
+		String retVal="KORNKRV.sqlite";
+
+		try{
+
+		String key=args[0].substring(0, 2);
+
+		Map<String, String> bibleMap = new HashMap<String, String>();
+		/* 현대어 성경 */
+		bibleMap.put("kh" ,"KORTKV.sqlite");
+		/* 새번역 성경 */
+		bibleMap.put("kn" ,"kornrsv.sqlite");
+		/* 쉬운 성경 */
+		bibleMap.put("ke" ,"koreasy.sqlite");
+		/* 개역 한글 국한문 성경 */
+		bibleMap.put("ko" ,"korHChV.sqlite");
+		/* 킹제임스흠정역 성경 */
+		bibleMap.put("kk" ,"KORHKJV.sqlite");
+		/* KJV */
+		bibleMap.put("ek" ,"ENGKJV.sqlite");
+		/* NewKJV */
+		bibleMap.put("en" ,"ENGNKJV.sqlite");
+
+
+			retVal=bibleMap.get(key);
+			if(retVal==null){
+				retVal="KORNKRV.sqlite";
+			}else{
+//				args[0]=args[0].replaceAll(key, "");
+			}
+		}catch(ArrayIndexOutOfBoundsException e){
+		/*개역개정*/
+		retVal="KORNKRV.sqlite";
+		}
+		return retVal; 
 	}
 	
-	int getSearch_cnt(){
-		return this.search_cnt;
+
+
+	String get_version_name(String[] args)
+	{
+		String retVal="개역개정";
+
+		try{
+
+		String key=args[0].substring(0, 2);
+
+		Map<String, String> bibleMap = new HashMap<String, String>();
+		/* 현대어 성경 */
+		bibleMap.put("kh" ,"현대어");
+		/* 새번역 성경 */
+		bibleMap.put("kn" ,"새번역");
+		/* 쉬운 성경 */
+		bibleMap.put("ke" ,"쉬운 성경");
+		/* 개역 한글 국한문 성경 */
+		bibleMap.put("ko" ,"개역 한글 국한문");
+		/* 킹제임스흠정역 성경 */
+		bibleMap.put("kk" ,"킹제임스흠정역");
+		/* KJV */
+		bibleMap.put("ek" ,"KJV");
+		/* NewKJV */
+		bibleMap.put("en" ,"NewKJV");
+
+
+			retVal=bibleMap.get(key);
+			if(retVal==null){
+				retVal="개역개정";
+			}else{
+				args[0]=args[0].replaceAll(key, "");
+			}
+		}catch(ArrayIndexOutOfBoundsException e){
+		/*개역개정*/
+		retVal="개역개정";
+		}
+		return retVal; 
 	}
 	
-	void setSearch_cnt(int v){
-		this.search_cnt=v;
+	String get_chapter(String[] args)
+	{
+		String retVal="1";
+		retVal=args[0].replaceAll(FIND_PATTERN, "$2");
+
+		return retVal;
 	}
 	
-	void setBibledbpath(String str){
-		String concatStr=isIBM(str)?"\\\\":"/";
-		this.bibledbpath=str+""+concatStr;
-		this.location=this.bibledbpath;
+	//장:절 검색
+	String search_verse(String[] args)
+	{
+		String retVal="";
+		if (args.length == 1) {
+			retVal = args[0].trim();
+			if (-1 < retVal.indexOf("-")) {
+				if (retVal.indexOf(":") == -1) {
+					showUsage();// -이 있는데 :이 없다면 포맷 오류이다.
+				} else {
+					// 창3:4-4 이런식이다. OK
+				}
+			} else {
+				int posColone = retVal.indexOf(":");
+				if (-1 < posColone) {
+					// 창3:4 이런식이다.
+					retVal = retVal + "-" + retVal.substring(posColone + 1);// 창3:4-4
+					// 이렇게
+					// 바꾼다.
+				} else {
+					// 창4 이런식이다.
+					retVal = args[0] + ":1-999";
+				}
+			}
+		} else if (args.length == 2) {
+			if (-1 < args[0].indexOf(":")) {// 창1:3 4
+				retVal = args[0] + "-" + args[1];
+			} else {// 창 1 인경우, 창 1:1, 창 1:3-4
+				if (-1 < args[1].indexOf("-") && -1 < args[1].indexOf(":")) {
+					retVal = args[0] + args[1];
+				} else if (-1 == args[1].indexOf("-")
+						&& -1 < args[1].indexOf(":")) {// 창 1:3
+					retVal = args[0] + args[1];
+
+					int posColone = retVal.indexOf(":");
+					if (-1 < posColone) {
+						// 창3:4 이런식이다.
+						retVal = retVal + "-" + retVal.substring(posColone + 1);// 창3:4-4
+						// 이렇게
+						// 바꾼다.
+					} else {
+						// 창4 이런식이다.
+						retVal = args[0] + ":1-999";
+					}
+				} else {
+					retVal = args[0] + args[1] + ":1-999";
+				}
+			}
+		} else if (args.length == 3) {
+			retVal = args[0] + args[1] + "-" + args[2];
+		} else {
+			showUsage();// 인자가 너무 많아도 오류이다.
+		}
+		/* 장절 검색 끝*/
+		return retVal;
 	}
 
-	String getBibledbpath(){
-		return this.bibledbpath;
-	}
+	public static void main(String[] args) throws Exception
+	{
 
-	boolean isIBM(String str){
-		return str.indexOf("\\")>-1;
-	}
-
-	boolean isOption(String str){
-		return str.indexOf("/a")>-1;
-	}
-
-	/* getKeyword 
-	검색어로 된 구절을 반환 합니다.
-	@key
-	*/
-	String getKeyword(String key){
-		return key;
-	}
-	
-	/* getWord 
-	구절로 된 위치를 반환 합니다.
-	@key
-	*/
-	String getWord(String key){
-		return key;
-	}
-
-	/*객체 지향 형으로 변경 
-	2015-09-10 (목)
-	setGroup
-	*/
-
-	/* 구현부 (implement)*/
-	public static void main(String[] args) throws java.io.IOException {
-
-		String tmpA = "";
+		Connection connection = null;
+		Statement statement = null;
+		Program pg=new Program();
+		String version=pg.get_version(args);
+		String version_name=pg.get_version_name(args);
+		System.out.println(version);
+		String book="";
+		String chapter=pg.get_chapter(args);
 		String s = "";
 
 		String searchStr1="",searchStr2="",searchStr3="",searchStr4="";
 		String searchKeyWord1="", searchKeyWord2="", searchKeyWord3="", searchKeyWord4="";
+	
+		String tmpA="";
 
 		/**
 		* 키워드 검색 인지 구절 검색인지 판단, 
@@ -127,351 +283,69 @@ public class Bible {
 		*/
 		boolean isKeywordSearch = false;
 		
-		Bible bi = new Bible();
+		/* 장절 검색 */
+		tmpA=pg.search_verse(args);
+
+
+
+		String strFileName = "";
+		String strBookIndexName = "";
+		strBookIndexName = tmpA.replaceAll(FIND_PATTERN, "$1");
+		
+		strBookIndexName = strBookIndexName.trim();
+		strBookIndexName = strBookIndexName.trim();
+
+		searchStr1 = strBookIndexName;
+		// tmpA.replaceAll(FIND_PATTERN,"$1");
+		book=pg.get_where(searchStr1);
+		searchStr2 = tmpA.replaceAll(FIND_PATTERN, "$2");
+		searchStr3 = tmpA.replaceAll(FIND_PATTERN, "$3");
+		searchStr4 = tmpA.replaceAll(FIND_PATTERN, "$4");
+		try
+		{
+			/* SQLite JDBC 클래스가 있는지 검사하는 부분입니다. */
+			Class.forName("org.sqlite.JDBC");
+		}
+		catch(ClassNotFoundException e)
+		{
+			System.out.println("org.sqlite.JDBC를 찾지 못했습니다.");
+		}
+
+		/* Program.class와 같은 디렉터리에 있는 test.db를 엽니다. */
 		String location=new java.io.File( "." ).getCanonicalPath();
-		boolean isIBM=bi.isIBM(location);
 
-		if(isIBM)
-		bi.setBibledbpath(location.replace("\\", "\\\\"));
-		else
-		bi.setBibledbpath(location.replace("/", "/"));
+		location=location.replaceAll("\\\\", "/");
+//	     connection = DriverManager.getConnection("jdbc:sqlite:"+location+"/KORTKV.db");
+	     connection = DriverManager.getConnection("jdbc:sqlite:"+location+"/db/"+version);
 
 		
-		if (args.length == 0) {
-			// throw new RuntimeException("");
-//			System.out.println("왜 안되??");
-//			System.out.println(bi.getTest());
-			showUsage();
-			System.out.println(bi.getBibledbpath());
-			String os_ver=System.getProperty("os.name");
+		/* 연결 성공했을 때, connection으로부터 statement 인스턴스를 얻습니다. 여기서 SQL 구문을 수행합니다. */
+		statement = connection.createStatement();
+
+		/* 아래는 SQL 예시입니다. */
+		/* Table1이라는 테이블 안에 field1(text형), field2(integer형)라는 이름의 필드가 있다고 가정합니다. */
+		//System.out.println("select * from Bible where book="+book+" and  chapter="+chapter+";");
+		//ResultSet rs = statement.executeQuery("select * from Bible where book="+book+" and  chapter="+chapter+" and ;");
+		ResultSet rs = statement.executeQuery("select * from bible where book='"+book+"' and chapter='"+searchStr2+"' and verse>='"+searchStr3+"' and verse<='"+searchStr4+"';");
+		/* 결과를 첫 행부터 끝 행까지 반복하며 출력합니다. */
+        System.out.println(pg.strBookIndexFullName+" "+searchStr2+"장 "+searchStr3+"~"+searchStr4+"절 ["+version_name+"]");
+		while(rs.next())
+		{
+			String  chapters = rs.getString("chapter");
+			String  verse = rs.getString("verse");
+			String  content = rs.getString("content");
+
+	         System.out.print(verse+" ");
+	         System.out.print(content);
+	         System.out.println();
 			
-			System.out.println(os_ver);
-
-			System.out.println(bi.isIBM(bi.getBibledbpath())?"IBM":"UNIX");
-
-			return;
-		}
-		if(args.length==1&&bi.isOption(args[0])){
-			System.out.println("옵션 있음.");
-			return;
 		}
 
-		if(args.length==1)
-		{
-			searchKeyWord1 = args[0];
-
-			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
-				isKeywordSearch = true;
-			}
-		}
-		else if(args.length==2)
-		{
-			searchKeyWord1 = args[0];
-			searchKeyWord2 = args[1];
-			
-			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
-				isKeywordSearch = true;
-			}
-			if(isKeywordSearch == false && searchKeyWord2.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord2)) {
-				isKeywordSearch = true;
-			}
-		}
-		else if(args.length==3)
-		{
-			searchKeyWord1 = args[0];
-			searchKeyWord2 = args[1];
-			searchKeyWord3 = args[2];
-			
-			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
-				isKeywordSearch = true;
-			}
-			if(isKeywordSearch == false && searchKeyWord2.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord2)) {
-				isKeywordSearch = true;
-			}
-			if(isKeywordSearch == false && searchKeyWord3.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord3)) {
-				isKeywordSearch = true;
-			}
-		}
-		else if(4 <= args.length)
-		{
-			searchKeyWord1 = args[0];
-			searchKeyWord2 = args[1];
-			searchKeyWord3 = args[2];
-			searchKeyWord4 = args[3];
-			
-			if(searchKeyWord1.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord1)) {
-				isKeywordSearch = true;
-			}
-			if(isKeywordSearch == false && searchKeyWord2.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord2)) {
-				isKeywordSearch = true;
-			}
-			if(isKeywordSearch == false && searchKeyWord3.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord3)) {
-				isKeywordSearch = true;
-			}
-			if(isKeywordSearch == false && searchKeyWord4.replaceAll(FIND_PATTERN4,"").equals(searchKeyWord4)) {
-				isKeywordSearch = true;
-			}
-		}
-		
-		Hashtable<String, String> ht = new Hashtable<String, String>();
-		
-		if(isKeywordSearch)
-		{
-			//키워드 검색
-			if (args.length == 1) {
-				for(int j=0;j<66;j++) {
-					String strFileName=arrTables[0][j];
-					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
-					int i=0;
-					while ((s = in.readLine()) != null) {
-						if (s.equals("")){
-							continue;
-						} // 라인이 공백이거나 첫글자가 #이면 패스
-						if(-1 < s.indexOf(args[0])) {//해당절만 메모리에 넣는다.
-							ht.put("" +i++, s); // ht에 넣음
-						}
-					}
-					in.close();
-				}
-				 
-			} else if (args.length == 2) {
-				for(int j=0;j<66;j++) {
-					String strFileName=arrTables[0][j];
-					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
-					int i=0;
-					while ((s = in.readLine()) != null) {
-						if (s.equals("")){
-							continue;
-						} // 라인이 공백이거나 첫글자가 #이면 패스
-						if(-1 < s.indexOf(args[0]) && -1 < s.indexOf(args[1])) {//해당절만 메모리에 넣는다.
-							ht.put("" +i++, s); // ht에 넣음
-
-						}
-					}
-					in.close();
-				}
-			} else if (args.length == 3) {
-				for(int j=0;j<66;j++) {
-					String strFileName=arrTables[0][j];
-					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
-					int i=0;
-					while ((s = in.readLine()) != null) {
-						if (s.equals("")){
-							continue;
-						} // 라인이 공백이거나 첫글자가 #이면 패스
-						if(-1 < s.indexOf(args[0]) && -1 < s.indexOf(args[1]) && -1 < s.indexOf(args[2])) {//해당절만 메모리에 넣는다.
-							ht.put("" +i++, s); // ht에 넣음
-						}
-					}
-					in.close();
-				}
-			} else {
-				for(int j=0;j<66;j++) {
-					String strFileName=arrTables[0][j];
-					int old_i1=0,old_i2=0,i1,i2;
-					BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
-					int i=0;
-					while ((s = in.readLine()) != null) {
-						if (s.equals("")){
-							continue;
-						} // 라인이 공백이거나 첫글자가 #이면 패스
-						if(-1 < s.indexOf(args[0]) && -1 < s.indexOf(args[1]) && -1 < s.indexOf(args[2]) && -1 < s.indexOf(args[3])) {//해당절만 메모리에 넣는다.
-							ht.put("" +i++, s); // ht에 넣음
-						}
-					}
-					in.close();
-				}
-			} 
-			int search_cnt=0;
-			for(int i = 0;i<ht.size();i++) {
-				System.out.println(ht.get(""+i));
-				search_cnt++;
-			}
-			bi.setSearch_cnt(search_cnt);
-			System.out.println("검색어 \""+args[0]+"\"로 총 "+bi.getSearch_cnt()+"개가 검색 되었습니다.");
-		}
-		else{
-			//장:절 검색
-			if (args.length == 1) {
-				tmpA = args[0].trim();
-				if (-1 < tmpA.indexOf("-")) {
-					if (tmpA.indexOf(":") == -1) {
-						showUsage();// -이 있는데 :이 없다면 포맷 오류이다.
-						return;
-					} else {
-						// 창3:4-4 이런식이다. OK
-					}
-				} else {
-					int posColone = tmpA.indexOf(":");
-					if (-1 < posColone) {
-						// 창3:4 이런식이다.
-						tmpA = tmpA + "-" + tmpA.substring(posColone + 1);// 창3:4-4
-						// 이렇게
-						// 바꾼다.
-					} else {
-						// 창4 이런식이다.
-						tmpA = args[0] + ":1-999";
-					}
-				}
-			} else if (args.length == 2) {
-				if (-1 < args[0].indexOf(":")) {// 창1:3 4
-					tmpA = args[0] + "-" + args[1];
-				} else {// 창 1 인경우, 창 1:1, 창 1:3-4
-					if (-1 < args[1].indexOf("-") && -1 < args[1].indexOf(":")) {
-						tmpA = args[0] + args[1];
-					} else if (-1 == args[1].indexOf("-")
-							&& -1 < args[1].indexOf(":")) {// 창 1:3
-						tmpA = args[0] + args[1];
-	
-						int posColone = tmpA.indexOf(":");
-						if (-1 < posColone) {
-							// 창3:4 이런식이다.
-							tmpA = tmpA + "-" + tmpA.substring(posColone + 1);// 창3:4-4
-							// 이렇게
-							// 바꾼다.
-						} else {
-							// 창4 이런식이다.
-							tmpA = args[0] + ":1-999";
-						}
-					} else {
-						tmpA = args[0] + args[1] + ":1-999";
-					}
-				}
-			} else if (args.length == 3) {
-				tmpA = args[0] + args[1] + "-" + args[2];
-			} else {
-				showUsage();// 인자가 너무 많아도 오류이다.
-				return;
-			}
-
-			String strFileName = "";
-			String strBookIndexName = "";
-			try {
-				strBookIndexName = tmpA.replaceAll(FIND_PATTERN, "$1");
-
-				strBookIndexName = strBookIndexName.trim();
-				for (int i = 0; i < 66; i++) {
-					if (strBookIndexName.equals(arrTables[1][i])
-							|| strBookIndexName.equals(arrTables[0][i].replaceAll(
-									FIND_PATTERN2, ""))) {
-						strBookIndexName = arrTables[1][i];// 약어로 변경한다.
-						strFileName = arrTables[0][i];
-						break;
-					}
-				}
-
-				if ("".equals(strFileName)) {// 파일이름을 못찾았다는 것은 format이 일치하지 않다는 것이다.
-					showUsage();
-					return;
-				}
-
-				searchStr1 = strBookIndexName;// tmpA.replaceAll(FIND_PATTERN,
-				// "$1");
-				searchStr2 = tmpA.replaceAll(FIND_PATTERN, "$2");
-				searchStr3 = tmpA.replaceAll(FIND_PATTERN, "$3");
-				searchStr4 = tmpA.replaceAll(FIND_PATTERN, "$4");
-
-				boolean bFinded=false;
-				//			 for(int j=0;j<66;j++) {
-				//			 strFileName=arrTables[0][j];
-				//			int old_i1=0,old_i2=0,i1,i2;
-				BufferedReader in = new BufferedReader(new FileReader(bi.getBibledbpath() + strFileName + ".txt"));
-
-				while ((s = in.readLine()) != null) {
-					if (s.equals("")/*|| s.charAt(0) == '#'*/) {
-						continue;
-					} // 라인이 공백이거나 첫글자가 #이면 패스
-					if(s.startsWith(strBookIndexName+searchStr2+":")){//해당절만 메모리에 넣는다.
-						String temp[] = s.split("\t");
-						//				String str1 = temp[0].replaceAll("[ㄱ-힣]+([0-9]+):[0-9]+","$1");
-						//				String str2 = temp[0].replaceAll("[ㄱ-힣]+[0-9]+:([0-9]+)","$1");
-						//
-						//				i1 = Integer.parseInt(str1);
-						//				i2 = Integer.parseInt(str2);
-						//				
-						//				if(!((i1==i2 && i1==1) || old_i1+1==i1 || old_i2+1==i2 )){
-						//					throw new RuntimeException(strFileName+s);
-						//				}
-						//				old_i1 = i1;
-						//				old_i2 = i2;
-						if(temp.length>2){
-							//temp[1]=temp[1].replaceAll("<","&gt;");
-							//temp[1]=temp[1].replaceAll(">","&gt;");
-							ht.put(temp[0],temp[1]+" "+temp[2]);// ht tab 이상 있는 
-						}else{
-							//temp[1]=temp[1].replaceAll("<","&gt;");
-							ht.put(temp[0], temp[1]); // ht에 넣음
-						}
-						bFinded = true;
-					}
-					else {
-						if(bFinded) {
-							break;
-						}
-					}
-				}         
-				in.close();
-				//			 }
-
-				// String location = new java.io.File(".").getCanonicalPath();
-				// location = location.replace("\\", "\\\\");
-
-			} catch (ArrayIndexOutOfBoundsException e) {
-				System.err
-				.println("해당 결과가 null이 나왔다면 txt에 잘못된 탭구분이 있을 수 있습니다. 해당권에 파일을 참조하세요."
-						+ s);
-			} catch (IOException e) {
-				System.err.println("해당 파일을 찾을 수 없습니다." + e.getMessage());
-
-				e.printStackTrace();
-			}
-			catch (Exception e) {
-				System.err.println("[Error]" + e.getMessage());
-				e.printStackTrace();
-			}
-
-			String kor = "";
-
-			try {
-				// String tmpB =args[1];
-			} catch (ArrayIndexOutOfBoundsException e) {
-				// String tmpB ="";
-				System.err
-				.println("해당 결과가 null이 나왔다면 txt에 잘못된 탭구분이 있을 수 있습니다. 해당권에 파일을 참조하세요.");
-			}
-
-			StringBuilder c = new StringBuilder();
-			String tmp2thValue = "";
-
-			int lstNum = 0;
-
-			for (int i = Integer.parseInt(searchStr3); i <= Integer.parseInt(searchStr4); i++) {
-				kor = ht.get(searchStr1 + searchStr2 + ":" + i);
-				if (kor == null || kor == "") {
-					break;
-				}
-				//c.append(i + (" " + kor.replaceAll(FIND_PATTERN3,"")).replaceAll("  "," ") + "\n");
-				if(kor.indexOf("<")>-1)
-				{
-					c.append(kor.replaceAll(FIND_PATTERN5,"$1")+ "\n");
-				}
-				c.append(i + " " + kor.replaceAll(FIND_PATTERN3,"").replaceAll("  "," ") + "\n");
-				lstNum = i;
-			}
-
-			if(Integer.parseInt(searchStr3) == lstNum) {
-				System.out.println(strBookIndexName + searchStr2 + ":" + searchStr3);
-				System.out.println(strFileName.replaceAll(FIND_PATTERN2, "") + searchStr2 + ":" + searchStr3);
-			}else {
-				System.out.println(strBookIndexName + searchStr2 + ":" + searchStr3 + "-" + Integer.toString(lstNum));
-				System.out.println(strFileName.replaceAll(FIND_PATTERN2, "") + searchStr2 + ":" + searchStr3 + "-" + Integer.toString(lstNum));
-			}
-			System.out.println(c);
-		}
-	}
+		/* resultSet 닫기 */
+		rs.close();
+		/* DB와의 연결 닫기 */
+		connection.close();
+  }
 
 	/**
 	 * 
@@ -496,49 +370,5 @@ public class Bible {
 		System.out.println("사용예12:java Bible 창세기 1:2-3");
 		System.out.println("사용예13:java Bible 동방 박사");
 
-/*		
-C:\Users\Taebu>dir /?
-디렉터리에 있는 파일과 하위 디렉터리 목록을 보여 줍니다.
-
-DIR [드라이브:][경로][파일 이름] [/A[[:]특성]] [/B] [/C] [/D] [/L] [/N]
-  [/O[[:]정렬 순서]] [/P] [/Q] [/R] [/S] [/T[[:]시간 필드]] [/W] [/X] [/4]
-
-  [드라이브:][경로][파일 이름]
-              나타낼 드라이브, 디렉터리 및/또는 파일을 지정합니다.
-
-  /A          지정된 특성을 가진 파일을 보여 줍니다.
-  특성         D  디렉터리                R  읽기 전용 파일
-               H  숨김 파일               A  기록 파일
-               S  시스템 파일             I  콘텐츠가 인덱싱되지 않은 파일
-               L  재분석 지점             -  부정을 뜻하는 접두사
-  /B          최소 형식을 사용합니다(머리말 정보나 요약 없음).
-  /C          파일 크기에 1000단위로 분리 기호를 보여 줍니다.  이것은 기본값
-              입니다. 분리 기호를 표시하지 않으려면 /-C를 사용하십시오.
-  /D          /W와 같으나 세로로 배열하여 보여 줍니다.
-  /L          소문자를 사용합니다.
-  /N          파일 이름이 제일 오른쪽에 오도록 새로운 긴 목록 형식을 사용합니다.
-  /O          파일을 정렬된 순서로 보여 줍니다.
-  정렬 순서    N  이름순(문자 순서)        S  크기순(작은 것 먼저)
-               E  확장명순(문자 순서)      D  날짜/시간순(가장 이전 것 먼저)
-               G  그룹 디렉터리 먼저       -  순서를 반대로 하는 접두사
-  /P          정보가 한 화면에 꽉 차면 잠깐 멈춥니다.
-  /Q          파일 소유자를 보여 줍니다.
-  /R          파일의 대체 데이터 스트림을 표시합니다.
-  /S          지정한 디렉터리와 하위 디렉터리를 포함하여 보여 줍니다.
-  /T          정렬에 사용할 시간 필드를 지정합니다.
-  시간 필드   C  작성한 시간
-              A 마지막 액세스한 시간
-              W  마지막 기록한 시간
-  /W          이름만 가로로 배열하여 보여 줍니다.
-  /X          8.3 파일 이름이 아닌 파일에 대한 짧은 이름을 보여 줍니다.
-              이 형식은 긴 이름 앞에 짧은 이름이 추가된 것으로 /N 형식과
-              같습니다. 짧은 이름이 없으면
-              공백을 보여 줍니다.
-  /4          4자릿수 연도를 표시합니다.
-
-스위치를 DIRCMD 환경 변수로 미리 설정할 수 있습니다. 하이픈(-)을
-스위치 앞에 접두 기호로 주면 미리 설정된 스위치에 우선합니다(예, /-W).
-git ...
-*/
 	}	
 }
