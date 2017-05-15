@@ -199,8 +199,10 @@ public class Program
 	String get_chapter(String[] args)
 	{
 		String retVal="1";
+		try{
 		retVal=args[0].replaceAll(FIND_PATTERN, "$2");
-
+		}catch(ArrayIndexOutOfBoundsException e){
+		}
 		return retVal;
 	}
 	
@@ -273,10 +275,9 @@ public class Program
 		String book="";
 		String chapter=pg.get_chapter(args);
 		String s = "";
-
 		String searchStr1="",searchStr2="",searchStr3="",searchStr4="";
 		String searchKeyWord1="", searchKeyWord2="", searchKeyWord3="", searchKeyWord4="";
-	
+
 		String tmpA="";
 
 		/**
@@ -378,22 +379,31 @@ public class Program
 	public static void showUsage() {
 		System.out.println("성경 요절이나 성구의 키워드만 넣으면 검색이 됩니다.");
 		System.out.println("");
-		System.out.println("java Bible[성경이름 or 약어 이름][경로 장[:]절]");
+		System.out.println("java  -cp \".;c:\\Bible\\sqlite-jdbc-3.16.1.jar\" Program[성경버전성경이름 or 약어 이름][경로 장[:]절]");
 
 		System.out.println("  /A          주석 및 등장인물의 이름을 출력 합니다.");
 		System.out.println("인자가 1개 이상 숫자를 포함하는 경우");
-		System.out.println("사용예2:java Bible 창1:2");
-		System.out.println("사용예3:java Bible 창1:2-3");
-		System.out.println("사용예4:java Bible 창세기1");
-		System.out.println("사용예5:java Bible 창세기1:2");
-		System.out.println("사용예6:java Bible 창세기1:2-3");
-		System.out.println("사용예7:java Bible 창 1");
-		System.out.println("사용예8:java Bible 창 1:2");
-		System.out.println("사용예9:java Bible 창 1:2-3");
-		System.out.println("사용예10:java Bible 창세기 1");
-		System.out.println("사용예11:java Bible 창세기 1:2");
-		System.out.println("사용예12:java Bible 창세기 1:2-3");
-		System.out.println("사용예13:java Bible 동방 박사");
+		System.out.println("사용예2:java Program 창1:2");
+		System.out.println("사용예3:java Program 창1:2-3");
+		System.out.println("사용예4:java Program 창세기1");
+		System.out.println("사용예5:java Program 창세기1:2");
+		System.out.println("사용예6:java Program 창세기1:2-3");
+		System.out.println("사용예7:java Program 창 1");
+		System.out.println("사용예8:java Program 창 1:2");
+		System.out.println("사용예9:java Program 창 1:2-3");
+		System.out.println("사용예10:java Program 창세기 1");
+		System.out.println("사용예11:java Program 창세기 1:2");
+		System.out.println("사용예12:java Program 창세기 1:2-3");
+		System.out.println("사용예13:java Program 동방 박사");
+		System.out.println("사용예15[개역개정한글]:java Program 창1:1 ");
+		System.out.println("사용예14[현대어]:java Program kh창1:1 ");
+		System.out.println("사용예15[새번역]:java Program kn창1:1 ");
+		System.out.println("사용예15[쉬운성경]:java Program ke창1:1 ");
+		System.out.println("사용예15[개역한글국한문]:java Program ko창1:1 ");
+		System.out.println("사용예15[킹제임스흠정역]:java Program kk창1:1 ");
+		System.out.println("사용예15[킹제임스영문]:java Program ek창1:1 ");
+		System.out.println("사용예15[뉴킹제임스영문]:java Program en창1:1 ");
+
 
 	}	
 }
