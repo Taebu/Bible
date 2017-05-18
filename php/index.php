@@ -10,7 +10,13 @@ sudo vi /etc/apache2/httpd.conf 설정에 맞게 수정
 php 활성화, index.php ifModule 에 추가
 linux or mac cp 만 다름 */
 $k=$_GET['k'];
-$array_keyword=explode("\n",$k);
+
+if(strrpos($k,",")>-1)
+{
+	$array_keyword=explode(",",$k);
+}else{
+	$array_keyword=explode("\n",$k);
+}
 foreach ($array_keyword as $keys) {
 	# code...
 	exec('java -cp ".:./sqlite-jdbc-3.16.1.jar" Program '.$keys.' 2>&1',$output);
