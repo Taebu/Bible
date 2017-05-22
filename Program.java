@@ -147,6 +147,8 @@ public class Program
 		/* NewKJV */
 		bibleMap.put("gr" ,"bible_greek.sqlite");
 
+		bibleMap.put("jp" ,"bible_japan_niv.sqlite");
+
 
 			retVal=bibleMap.get(key);
 			if(retVal==null){
@@ -190,6 +192,7 @@ public class Program
 		bibleMap.put("hb" ,"hebrew");
 		/* NewKJV */
 		bibleMap.put("gr" ,"greek");
+		bibleMap.put("jp" ,"japan");
 
 
 			retVal=bibleMap.get(key);
@@ -450,6 +453,26 @@ public class Program
 			sql+="where book='"+book+"' and chapter='"+searchStr2+"' order by verse desc limit 1; ";
 
 
+			}else if(version_name.equals("greek")){
+				sql="select c1content as content,";
+				sql+="c4book_no as book,";
+				sql+="c5chapter_no as chapter,";
+				sql+="c6verse_no as verse ";
+				sql+="from bible_greek ";
+				sql+="where book='"+book+"' ";
+				sql+="and chapter='"+searchStr2+"' order by verse desc limit 1; ";
+
+
+			}else if(version_name.equals("japan")){
+				sql="select c1content as content,";
+				sql+="c4book_no as book,";
+				sql+="c5chapter_no as chapter,";
+				sql+="c6verse_no as verse ";
+				sql+="from bible_japan_niv ";
+				sql+="where book='"+book+"' ";
+				sql+="and chapter='"+searchStr2+"' order by verse desc limit 1; ";
+
+
 			}else{
 			sql="select verse from bible ";
 			sql+="where book='"+book+"' and chapter='"+searchStr2+"' order by verse desc limit 1;";
@@ -487,6 +510,17 @@ public class Program
 				sql+="c5chapter_no as chapter,";
 				sql+="c6verse_no as verse ";
 				sql+="from bible_greek ";
+				sql+="where book='"+book+"' ";
+				sql+="and chapter='"+searchStr2;
+				sql+="' and verse>='"+searchStr3;
+				sql+="' and verse<='"+searchStr4+"';";
+
+			}else if(version_name.equals("japan")){
+				sql="select c1content as content,";
+				sql+="c4book_no as book,";
+				sql+="c5chapter_no as chapter,";
+				sql+="c6verse_no as verse ";
+				sql+="from bible_japan_niv ";
 				sql+="where book='"+book+"' ";
 				sql+="and chapter='"+searchStr2;
 				sql+="' and verse>='"+searchStr3;
