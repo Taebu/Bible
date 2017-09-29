@@ -1,3 +1,4 @@
+import java.nio.charset.Charset;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,13 +81,13 @@ public class Program
 		"빌립보서", "골로새서", "데살로니가전서", "데살로니가후서",
 		"디모데전서", "디모데후서", "디도서", "빌레몬서",
 		"히브리서", "야고보서", "베드로전서", "베드로후서",
-		"요한일서", "요한이서", "요한삼서", "유다서", "요한계시록","새교독문"},
+		"요한일서", "요한이서", "요한삼서", "유다서", "요한계시록","새교독문","웨스터민스터 신앙고백서"},
 		{ "0","창", "출", "레", "민", "신", "수", "삿", "룻", "삼상", "삼하", "왕상", "왕하",
 			"대상", "대하", "스", "느", "에", "욥", "시", "잠", "전", "아", "사",
 			"렘", "애", "겔", "단", "호", "욜", "암", "옵", "욘", "미", "나", "합",
 			"습", "학", "슥", "말", "마", "막", "눅", "요", "행", "롬", "고전",
 			"고후", "갈", "엡", "빌", "골", "살전", "살후", "딤전", "딤후", "딛", "몬",
-			"히", "약", "벧전", "벧후", "요일", "요이", "요삼", "유", "계","교"} };
+			"히", "약", "벧전", "벧후", "요일", "요이", "요삼", "유", "계","교","웨"} };
 
 	
 
@@ -141,16 +142,13 @@ public class Program
 		bibleMap.put("ek" ,"ENGKJV.sqlite");
 		/* NewKJV */
 		bibleMap.put("en" ,"ENGNKJV.sqlite");
-
-		/* NewKJV */
+		/* Hebrew */
 		bibleMap.put("hb" ,"bible_hebrew.sqlite");
-		/* NewKJV */
+		/* Hebrew */
 		bibleMap.put("gr" ,"bible_greek.sqlite");
 
-		bibleMap.put("jp" ,"bible_japan_niv.sqlite");
-
-
 			retVal=bibleMap.get(key);
+
 			if(retVal==null){
 				retVal="KORNKRV.sqlite";
 			}else{
@@ -188,13 +186,12 @@ public class Program
 		bibleMap.put("ek" ,"KJV");
 		/* NewKJV */
 		bibleMap.put("en" ,"NewKJV");
-		/* NewKJV */
-		bibleMap.put("hb" ,"hebrew");
-		/* NewKJV */
-		bibleMap.put("gr" ,"greek");
-		bibleMap.put("jp" ,"japan");
+		/* Hebrew */
+		bibleMap.put("hb" ,"Hebrew");
 
-
+		/* Greek */
+		bibleMap.put("gr" ,"Greek");
+		
 			retVal=bibleMap.get(key);
 			if(retVal==null){
 				retVal="개역개정";
@@ -354,8 +351,8 @@ public class Program
 		String chapter=pg.get_chapter(args);
 		String s = "";
 		String searchStr1="",searchStr2="",searchStr3="",searchStr4="";
-
-
+		boolean is_west=false;		
+		
 		String tmpA="";
 
 		/**
@@ -379,6 +376,14 @@ public class Program
 		searchStr1 = strBookIndexName;
 		// tmpA.replaceAll(FIND_PATTERN,"$1");
 		book=pg.get_where(searchStr1);
+		
+		is_west=searchStr1.equals("웨");
+		/**/
+		if(is_west)
+		{
+			version="WESTMIN.sqlite";
+			version_name="웨스터민스터 신앙고백서";
+		}
 		searchStr2 = tmpA.replaceAll(FIND_PATTERN, "$2");
 		searchStr3 = tmpA.replaceAll(FIND_PATTERN, "$3");
 		searchStr4 = tmpA.replaceAll(FIND_PATTERN, "$4");
@@ -446,37 +451,17 @@ public class Program
 		return;
 		}
 
+
 		/* 장절 검색*/
 		if(searchStr4.equals("999")){
-			if(version_name.equals("hebrew")){
-			sql="select c1content as content,c4book_no as book,c5chapter_no as chapter,c6verse_no as verse from bible_hebrew ";
-			sql+="where book='"+book+"' and chapter='"+searchStr2+"' order by verse desc limit 1; ";
+			if(version_name.equals("Hebrew"))
+			{
 
-
-			}else if(version_name.equals("greek")){
-				sql="select c1content as content,";
-				sql+="c4book_no as book,";
-				sql+="c5chapter_no as chapter,";
-				sql+="c6verse_no as verse ";
-				sql+="from bible_greek ";
-				sql+="where book='"+book+"' ";
-				sql+="and chapter='"+searchStr2+"' order by verse desc limit 1; ";
-
-
-			}else if(version_name.equals("japan")){
-				sql="select c1content as content,";
-				sql+="c4book_no as book,";
-				sql+="c5chapter_no as chapter,";
-				sql+="c6verse_no as verse ";
-				sql+="from bible_japan_niv ";
-				sql+="where book='"+book+"' ";
-				sql+="and chapter='"+searchStr2+"' order by verse desc limit 1; ";
-
-
+			sql="select c1content as content,c6verse_no as verse from bible_hebrew where c4book_no='"+book+"' and c5chapter_no='"+searchStr2+"' order by c6verse_no desc limit 1;";
+			}else if(version_name.equals("Greek")){
+			sql="select c1content as content,c6verse_no as verse from bible_greek where c4book_no='"+book+"' and c5chapter_no='"+searchStr2+"' order by c6verse_no desc limit 1;";
 			}else{
-			sql="select verse from bible ";
-			sql+="where book='"+book+"' and chapter='"+searchStr2+"' order by verse desc limit 1;";
-
+			sql="select verse from bible where book='"+book+"' and chapter='"+searchStr2+"' order by verse desc limit 1;";
 			}
 			ResultSet rsv=statement.executeQuery(sql);
 			while(rsv.next())
@@ -494,64 +479,85 @@ public class Program
 		}
 
 
-			if(version_name.equals("hebrew")){
+
+		if(is_west)
+		{
+			sql="select * from westminster_confession where 1=1 ";
+			sql+=" and wm_chapter="+searchStr2;
+			sql+=" and wm_clause="+searchStr3;
+			sql+=";";
+
+			ResultSet rs = statement.executeQuery(sql);
+			/* 결과를 첫 행부터 끝 행까지 반복하며 출력합니다. */
+			System.out.println(result);
+			while(rs.next())
+			{
+
+				String  wm_subject = rs.getString("wm_subject");
+				String  content = rs.getString("wm_content");
+
+				 System.out.println("제 "+searchStr2+"장 "+searchStr3+"항");
+				 System.out.println(wm_subject);
+				 System.out.print(content);
+				 System.out.println();
+				
+			}
+			/* resultSet 닫기 */
+			rs.close();
+			/* DB와의 연결 닫기 */
+			connection.close();
+
+		}
+
+		if(!is_west)
+		{
+			if(version_name.equals("Hebrew"))
+			{
 				sql="select c1content as content,";
-				sql+="c4book_no as book,";
 				sql+="c5chapter_no as chapter,";
 				sql+="c6verse_no as verse ";
 				sql+="from bible_hebrew ";
-				sql+="where book='"+book+"' ";
-				sql+="and chapter='"+searchStr2;
-				sql+="' and verse>='"+searchStr3;
-				sql+="' and verse<='"+searchStr4+"';";
-			}else if(version_name.equals("greek")){
+				sql+="where c4book_no='"+book+"' ";
+				sql+="and c5chapter_no='"+searchStr2+"' ";
+				sql+=" and c6verse_no>='"+searchStr3;
+				sql+="' and c6verse_no<='"+searchStr4+"';";
+
+			}else if(version_name.equals("Greek")){
 				sql="select c1content as content,";
-				sql+="c4book_no as book,";
 				sql+="c5chapter_no as chapter,";
 				sql+="c6verse_no as verse ";
 				sql+="from bible_greek ";
-				sql+="where book='"+book+"' ";
-				sql+="and chapter='"+searchStr2;
-				sql+="' and verse>='"+searchStr3;
-				sql+="' and verse<='"+searchStr4+"';";
-
-			}else if(version_name.equals("japan")){
-				sql="select c1content as content,";
-				sql+="c4book_no as book,";
-				sql+="c5chapter_no as chapter,";
-				sql+="c6verse_no as verse ";
-				sql+="from bible_japan_niv ";
-				sql+="where book='"+book+"' ";
-				sql+="and chapter='"+searchStr2;
-				sql+="' and verse>='"+searchStr3;
-				sql+="' and verse<='"+searchStr4+"';";
-
+				sql+="where c4book_no='"+book+"' ";
+				sql+="and c5chapter_no='"+searchStr2+"' ";
+				sql+=" and c6verse_no>='"+searchStr3;
+				sql+="' and c6verse_no<='"+searchStr4+"';";
 			}else{
-
 				sql="select * from bible where book='"+book;
 				sql+="' and chapter='"+searchStr2;
 				sql+="' and verse>='"+searchStr3;
 				sql+="' and verse<='"+searchStr4+"';";
 			}
-		ResultSet rs = statement.executeQuery(sql);
-		/* 결과를 첫 행부터 끝 행까지 반복하며 출력합니다. */
-        System.out.println(result);
-		while(rs.next())
-		{
-			String  chapters = rs.getString("chapter");
-			String  verse = rs.getString("verse");
-			String  content = rs.getString("content");
+			ResultSet rs = statement.executeQuery(sql);
+			/* 결과를 첫 행부터 끝 행까지 반복하며 출력합니다. */
+			System.out.println(result);
+			while(rs.next())
+			{
+				String  chapters = rs.getString("chapter");
+				String  verse = rs.getString("verse");
 
-	         System.out.print(verse+" ");
-	         System.out.print(content);
-	         System.out.println();
-			
+				
+				 System.out.print(verse+" ");
+				 System.out.print(rs.getString("content"));
+				 
+				 System.out.println();
+				
+			}
+			/* resultSet 닫기 */
+			rs.close();
+			/* DB와의 연결 닫기 */
+			connection.close();
+
 		}
-
-		/* resultSet 닫기 */
-		rs.close();
-		/* DB와의 연결 닫기 */
-		connection.close();
   }
 
 	/**
@@ -579,12 +585,12 @@ public class Program
 		System.out.println("사용예15[개역개정한글]:java Program 창1:1 ");
 		System.out.println("사용예14[현대어]:java Program kh창1:1 ");
 		System.out.println("사용예15[새번역]:java Program kn창1:1 ");
-		System.out.println("사용예15[쉬운성경]:java Program ke창1:1 ");
-		System.out.println("사용예15[개역한글국한문]:java Program ko창1:1 ");
-		System.out.println("사용예15[킹제임스흠정역]:java Program kk창1:1 ");
-		System.out.println("사용예15[킹제임스영문]:java Program ek창1:1 ");
-		System.out.println("사용예15[뉴킹제임스영문]:java Program en창1:1 ");
-
+		System.out.println("사용예16[쉬운성경]:java Program ke창1:1 ");
+		System.out.println("사용예17[개역한글국한문]:java Program ko창1:1 ");
+		System.out.println("사용예18[킹제임스흠정역]:java Program kk창1:1 ");
+		System.out.println("사용예19[킹제임스영문]:java Program ek창1:1 ");
+		System.out.println("사용예20[뉴킹제임스영문]:java Program en창1:1 ");
+		System.out.println("사용예21[웨스터민스터 신앙고백서 1장1항]:java Program 웨1:1 ");
 
 	}	
 }
