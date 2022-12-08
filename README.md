@@ -28,13 +28,15 @@ java Bible 동방 사람
 - 성경에서 "동방 사람"을 검색 (검색어는 "로 감싸서 표기)
 
 java Bible [각버전 두 글자] 창1
-- kh : 현대어 창세기 1장 전체 출력
-- kn : 새번역 창세기 1장 전체 출력
-- ke : 쉬운 성경 창세기 1장 전체 출력
-- ko : 개역 한글 국한문 창세기 1장 전체 출력
-- kk : 킹제임스흠정역 창세기 1장 전체 출력
-- ek : KJV 창세기 1장 전체 출력
-- en : NewKJV 창세기 1장 전체 출력
-- hb : Hebrew 창세기 1장 전체 출력
-- gr : Greek 창세기 1장 전체 출력
+- kh : 현대어
+- kn : 새번역
+- ke : 쉬운 성경
+- ko : 개역 한글 국한문
+- kk : 킹제임스흠정역
+- ek : KJV
+- en : NewKJV
+- ei : EngNIV
+- ee : EngESV
+- hb : Hebrew
+- gr : Greek
 
