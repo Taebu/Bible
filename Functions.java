@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Funtions extends Valiables{
+public class Functions extends Valiables{
 	String get_where(String str)
 	{
 		String retVal="1";
@@ -284,9 +284,10 @@ public class Funtions extends Valiables{
 
 	}	
 
-	public static void searchKeyword(String[] args, Statement statement, String version_name) throws SQLException {
+	public static void searchKeyword(String[] args) throws SQLException {
 		String sql;
 		String searchstr="";
+		Statement statement = getStatement();
 		int i=0;
 		for(i=0;i<args.length;i++){
 		searchstr+=" "+args[i].trim();
@@ -314,9 +315,10 @@ public class Funtions extends Valiables{
 		System.out.println("총 검색 결과 "+i+"개가 검색 되었습니다.");
 	}
 	
-	public static void getBible(Connection connection, Statement statement, String version_name, String book,
-			String searchStr2, String searchStr3, String searchStr4, String result) throws SQLException {
+	public static void getBible() throws SQLException {
 		String sql;
+		Connection connection = getConnection();
+		Statement statement = getStatement();
 		if(version_name.equals("Hebrew"))
 		{
 			sql="select c1content as content,";
@@ -324,9 +326,9 @@ public class Funtions extends Valiables{
 			sql+="c6verse_no as verse ";
 			sql+="from bible_hebrew ";
 			sql+="where c4book_no='"+book+"' ";
-			sql+="and c5chapter_no='"+searchStr2+"' ";
-			sql+=" and c6verse_no>='"+searchStr3;
-			sql+="' and c6verse_no<='"+searchStr4+"';";
+			sql+="and c5chapter_no='"+chapter+"' ";
+			sql+=" and c6verse_no>='"+start_a_verse;
+			sql+="' and c6verse_no<='"+end_of_verse+"';";
 
 		}else if(version_name.equals("Greek")){
 			sql="select c1content as content,";
@@ -334,18 +336,17 @@ public class Funtions extends Valiables{
 			sql+="c6verse_no as verse ";
 			sql+="from bible_greek ";
 			sql+="where c4book_no='"+book+"' ";
-			sql+="and c5chapter_no='"+searchStr2+"' ";
-			sql+=" and c6verse_no>='"+searchStr3;
-			sql+="' and c6verse_no<='"+searchStr4+"';";
+			sql+="and c5chapter_no='"+chapter+"' ";
+			sql+=" and c6verse_no>='"+start_a_verse;
+			sql+="' and c6verse_no<='"+end_of_verse+"';";
 		}else{
 			sql="select * from bible where book='"+book;
-			sql+="' and chapter='"+searchStr2;
-			sql+="' and verse>='"+searchStr3;
-			sql+="' and verse<='"+searchStr4+"';";
+			sql+="' and chapter='"+chapter;
+			sql+="' and verse>='"+start_a_verse;
+			sql+="' and verse<='"+end_of_verse+"';";
 		}
 		ResultSet rs = statement.executeQuery(sql);
-		/* 결과를 첫 행부터 끝 행까지 반복하며 출력합니다. */
-		System.out.println(result);
+		
 		while(rs.next())
 		{
 			String  chapters = rs.getString("chapter");
@@ -364,24 +365,28 @@ public class Funtions extends Valiables{
 		connection.close();
 	}
 
-	public static void getWestminster(Connection connection, Statement statement, String searchStr2, String searchStr3,
-		String result) throws SQLException {
+	public static void getWestminster() throws SQLException {
+		
+		Connection connection = getConnection(); 
+		Statement statement = getStatement();
+		
+		
 		String sql;
 		sql="select * from westminster_confession where 1=1 ";
-		sql+=" and wm_chapter="+searchStr2;
-		sql+=" and wm_clause="+searchStr3;
+		sql+=" and wm_chapter="+chapter;
+		sql+=" and wm_clause="+start_a_verse;
 		sql+=";";
 
 		ResultSet rs = statement.executeQuery(sql);
 		/* 결과를 첫 행부터 끝 행까지 반복하며 출력합니다. */
-		System.out.println(result);
+		
 		while(rs.next())
 		{
 
 			String  wm_subject = rs.getString("wm_subject");
 			String  content = rs.getString("wm_content");
 
-			 System.out.println("제 "+searchStr2+"장 "+searchStr3+"항");
+			 System.out.println("제 "+chapter+"장 "+start_a_verse+"항");
 			 System.out.println(wm_subject);
 			 System.out.print(content);
 			 System.out.println();
@@ -393,39 +398,39 @@ public class Funtions extends Valiables{
 		connection.close();
 	}
 	
-	public static String setKeyword(Funtions ft) throws SQLException {
+	public static String setKeyword(Functions ft) throws SQLException {
 		String result;
 		String sql;
 		Valiables bv = new Valiables();
 		Statement statement = bv.getStatement();
-		if(searchStr4.equals("999")){
+		if(end_of_verse.equals("999")){
 			if(version_name.equals("Hebrew"))
 			{
 
-			sql="select c1content as content,c6verse_no as verse from bible_hebrew where c4book_no='"+book+"' and c5chapter_no='"+searchStr2+"' order by c6verse_no desc limit 1;";
+			sql="select c1content as content,c6verse_no as verse from bible_hebrew where c4book_no='"+book+"' and c5chapter_no='"+chapter+"' order by c6verse_no desc limit 1;";
 			}else if(version_name.equals("Greek")){
-			sql="select c1content as content,c6verse_no as verse from bible_greek where c4book_no='"+book+"' and c5chapter_no='"+searchStr2+"' order by c6verse_no desc limit 1;";
+			sql="select c1content as content,c6verse_no as verse from bible_greek where c4book_no='"+book+"' and c5chapter_no='"+chapter+"' order by c6verse_no desc limit 1;";
 			}else{
-			sql="select verse from bible where book='"+book+"' and chapter='"+searchStr2+"' order by verse desc limit 1;";
+			sql="select verse from bible where book='"+book+"' and chapter='"+chapter+"' order by verse desc limit 1;";
 			}
 			ResultSet rsv=statement.executeQuery(sql);
 			while(rsv.next())
 			{
-				 searchStr4=rsv.getString("verse");
+				 end_of_verse=rsv.getString("verse");
 			}
 			/* resultSet 닫기 */
 			rsv.close();
-		    result=ft.strBookIndexFullName+" "+searchStr2+"장 "+searchStr3+"~"+searchStr4+"절 ["+version_name+"]";	
-		}else if(searchStr3.equals(searchStr4)){
+		    result=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";	
+		}else if(start_a_verse.equals(end_of_verse)){
 			/* 1절 검색 */
-			result=ft.strBookIndexFullName+" "+searchStr2+"장 "+searchStr3+"절 ["+version_name+"]";
+			result=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"절 ["+version_name+"]";
 		}else{
-			result=ft.strBookIndexFullName+" "+searchStr2+"장 "+searchStr3+"~"+searchStr4+"절 ["+version_name+"]";
+			result=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";
 		}
 		return result;
 	}	
 
-	public static void connectBible(Funtions ft) throws IOException, SQLException {
+	public static void connectSqlite(Functions ft) throws IOException, SQLException {
 		Valiables bv = new Valiables();
 		strBookIndexName = tmpA.replaceAll(FIND_PATTERN, "$1");
 		
@@ -436,16 +441,16 @@ public class Funtions extends Valiables{
 		// tmpA.replaceAll(FIND_PATTERN,"$1");
 		book=ft.get_where(searchStr1);
 		
-		is_west=searchStr1.equals("웨");
+		is_west=searchStr1.equals("웨");  
 		/**/
 		if(is_west)
 		{
 			version="WESTMIN.sqlite";
 			version_name="웨스터민스터 신앙고백서";
 		}
-		searchStr2 = tmpA.replaceAll(FIND_PATTERN, "$2");
-		searchStr3 = tmpA.replaceAll(FIND_PATTERN, "$3");
-		searchStr4 = tmpA.replaceAll(FIND_PATTERN, "$4");
+		chapter = tmpA.replaceAll(FIND_PATTERN, "$2");
+		start_a_verse = tmpA.replaceAll(FIND_PATTERN, "$3");
+		end_of_verse = tmpA.replaceAll(FIND_PATTERN, "$4");
 
 		try
 		{
