@@ -76,8 +76,9 @@ public class Functions extends Valiables{
 
 	String get_version_name(String[] args)
 	{
+		String originVal="개역개정";
 		String retVal="개역개정";
-
+		stringArgs = args;
 		try{
 
 		String key=args[0].substring(0, 2);
@@ -104,9 +105,9 @@ public class Functions extends Valiables{
 		bibleMap.put("gr" ,"Greek");
 		
 			retVal=bibleMap.get(key);
-			if(retVal==null){
-				retVal="개역개정";
-			}else{
+			if(retVal==null) {
+				retVal= originVal;
+			}else if(!originVal.equals(retVal)) {
 				stringArgs = removeFirstElement(args);
 			}
 		}catch(ArrayIndexOutOfBoundsException e){
