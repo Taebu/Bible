@@ -7,23 +7,22 @@ public class Bible extends Valiables
 		Functions ft = new Functions();
 		version = ft.get_version(args);
 		version_name=ft.get_version_name(args);
-		chapter=ft.get_chapter(args);
+		chapter=ft.get_chapter(stringArgs);
 				
 		/* 장절 검색 */
-		tmpA=ft.search_verse(args);
+		tmpA=ft.search_verse(stringArgs);
 
 		ft.connectSqlite(ft);
 
 		String mainTitle="";
-		String sql="";
-
+		
 		/* 장절 구절 */
-		mainTitle = ft.setKeyword(ft);
+		mainTitle = ft.getTitle(ft);
 		
 		
 		/* 검색어 검색*/
-		if(ft.isKeyword(args)){
-			ft.searchKeyword(args);
+		if(ft.isKeyword(stringArgs)){
+			ft.searchKeyword(stringArgs);
 		}else {
 			System.out.println(mainTitle);
 		}
