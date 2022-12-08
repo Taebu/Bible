@@ -22,6 +22,7 @@ javac -encoding utf-8 -d . *.java
 하위폴더에 taebu 에 *.class 파일이 생성 된다.
 
 실행방법
+
 java  -cp ".;*" taebu.Bible 창1:1-13
 - 창세기 1장 1절에서 13절까지 출력
 
