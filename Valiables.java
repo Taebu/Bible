@@ -131,7 +131,8 @@ import java.sql.Statement;
 	public static boolean is_west=false;		
 	
 	public static String tmpA="";
-
+	
+	public static String[] stringArgs;
 	/**
 	* 키워드 검색 인지 구절 검색인지 판단, 
 	* 기본값은 'false'로 구절 검색이다. 
