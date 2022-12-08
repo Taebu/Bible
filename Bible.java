@@ -19,11 +19,13 @@ public class Bible extends Valiables
 
 		/* 장절 구절 */
 		mainTitle = ft.setKeyword(ft);
-		System.out.println(mainTitle);
+		
 		
 		/* 검색어 검색*/
 		if(ft.isKeyword(args)){
 			ft.searchKeyword(args);
+		}else {
+			System.out.println(mainTitle);
 		}
 		
 
