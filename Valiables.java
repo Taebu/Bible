@@ -3,7 +3,7 @@ package taebu;
 import java.sql.Connection;
 import java.sql.Statement;
 
-public class Valiables {
+ class Valiables {
 	final static String[][] arrVersion={
 	{
 	"개역한글판(korHRV)",  
@@ -125,10 +125,9 @@ public class Valiables {
 	public static String version_name;
 	
 	public static String book="";
-	public static String chapter;
 
 	public static String s = "";
-	public static String searchStr1="",searchStr2="",searchStr3="",searchStr4="";
+	public static String searchStr1="",chapter="",start_a_verse="",end_of_verse="";
 	public static boolean is_west=false;		
 	
 	public static String tmpA="";
