@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Functions extends Valiables{
+class Functions extends Valiables{
 	String get_where(String str)
 	{
 		String retVal="1";
