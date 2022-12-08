@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -106,7 +107,7 @@ public class Functions extends Valiables{
 			if(retVal==null){
 				retVal="개역개정";
 			}else{
-				args[0]=args[0].replaceAll(key, "");
+				stringArgs = removeFirstElement(args);
 			}
 		}catch(ArrayIndexOutOfBoundsException e){
 		/*개역개정*/
@@ -114,7 +115,11 @@ public class Functions extends Valiables{
 		}
 		return retVal; 
 	}
-
+	
+	public static String[] removeFirstElement(String[] arr) {
+	        return Arrays.copyOfRange(arr, 1, arr.length);
+		}
+	
 	String get_chapter(String[] args)
 	{
 		String retVal="1";
@@ -293,7 +298,7 @@ public class Functions extends Valiables{
 		searchstr+=" "+args[i].trim();
 		}
 		searchstr=searchstr.trim();
-		sql="select *,replace(content,'"+searchstr+"','<b>"+searchstr+"</b>') content2 from bible where content like '%"+searchstr+"%';";
+		sql="select *,replace(content,'"+searchstr+"','\""+searchstr+"\"') content2 from bible where content like '%"+searchstr+"%';";
 		ResultSet rs=statement.executeQuery(sql);
 		i=0;
 		while(rs.next())
@@ -398,8 +403,8 @@ public class Functions extends Valiables{
 		connection.close();
 	}
 	
-	public static String setKeyword(Functions ft) throws SQLException {
-		String result;
+	public static String getTitle(Functions ft) throws SQLException {
+		String mainTitle;
 		String sql;
 		Valiables bv = new Valiables();
 		Statement statement = bv.getStatement();
@@ -420,14 +425,14 @@ public class Functions extends Valiables{
 			}
 			/* resultSet 닫기 */
 			rsv.close();
-		    result=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";	
+		    mainTitle=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";	
 		}else if(start_a_verse.equals(end_of_verse)){
 			/* 1절 검색 */
-			result=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"절 ["+version_name+"]";
+			mainTitle=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"절 ["+version_name+"]";
 		}else{
-			result=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";
+			mainTitle=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";
 		}
-		return result;
+		return mainTitle;
 	}	
 
 	public static void connectSqlite(Functions ft) throws IOException, SQLException {
