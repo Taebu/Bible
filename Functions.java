@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-class Functions extends Valiables{
+public class Functions extends Valiables{
 	String get_where(String str)
 	{
 		String retVal="1";
@@ -53,6 +53,12 @@ class Functions extends Valiables{
 		bibleMap.put("ek" ,"ENGKJV.sqlite");
 		/* NewKJV */
 		bibleMap.put("en" ,"ENGNKJV.sqlite");
+		
+		/* Eng ESV */
+		bibleMap.put("ee" ,"ENGESV.sqlite");
+		/* Eng NIV */
+		bibleMap.put("ei" ,"ENGNIV.sqlite");
+		
 		/* Hebrew */
 		bibleMap.put("hb" ,"bible_hebrew.sqlite");
 		/* Hebrew */
@@ -101,6 +107,11 @@ class Functions extends Valiables{
 		/* Hebrew */
 		bibleMap.put("hb" ,"Hebrew");
 
+		/* Eng ESV */
+		bibleMap.put("ee" ,"영문ESV");
+		/* Eng NIV */
+		bibleMap.put("ei" ,"영문NIV");
+		
 		/* Greek */
 		bibleMap.put("gr" ,"Greek");
 		
@@ -451,7 +462,7 @@ class Functions extends Valiables{
 		/**/
 		if(is_west)
 		{
-			version="WESTMIN.sqlite";
+			version_filename="WESTMIN.sqlite";
 			version_name="웨스터민스터 신앙고백서";
 		}
 		chapter = tmpA.replaceAll(FIND_PATTERN, "$2");
@@ -474,7 +485,7 @@ class Functions extends Valiables{
 		location=location.replaceAll("\\\\", "/");
 //	     connection = DriverManager.getConnection("jdbc:sqlite:"+location+"/KORTKV.db");
 	    
-		Valiables.setConnection(DriverManager.getConnection("jdbc:sqlite:"+location+"/db/"+version));
+		Valiables.setConnection(DriverManager.getConnection("jdbc:sqlite:"+location+"/db/"+version_filename));
 			
 
 		
