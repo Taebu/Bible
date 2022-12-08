@@ -16,18 +16,22 @@ Bible java version
 ### Valiables.java ( Class )
 해당 파일에는 성경 변수에 사용할 sqlite를 연결할 connection, statement를 선언하고 검색어 또는 번역 버젼, 책, 장, 시작절, 끝절을 구분하여 변수에 담도록 선언 하였습니다.
 
+dos에서 컴파일 하는 법
+javac -encoding utf-8 -d . *.java
+
+하위폴더에 taebu 에 *.class 파일이 생성 된다.
 
 실행방법
-java Bible 창1:1-13
+java  -cp ".;*" taebu.Bible 창1:1-13
 - 창세기 1장 1절에서 13절까지 출력
 
-java Bible 창1 
+java  -cp ".;*" taebu.Bible 창1 
 - 창세기 1장 전체 출력
 
-java Bible 동방 사람
+java  -cp ".;*" taebu.Bible 동방 사람
 - 성경에서 "동방 사람"을 검색 (검색어는 "로 감싸서 표기)
 
-java Bible [각버전 두 글자] 창1
+java  -cp ".;*" taebu.Bible [각버전 두 글자] 창1
 - kh : 현대어
 - kn : 새번역
 - ke : 쉬운 성경
