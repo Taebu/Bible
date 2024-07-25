@@ -10,8 +10,62 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Functions extends Valiables{
-	String get_where(String str)
+public class Functions extends Valiables implements FuncInter{
+
+	Functions(){
+
+	}
+
+	Functions(String[] args) throws IOException,SQLException{
+		
+		version =  get_version(args);
+		version_name = get_version_name(args);
+		chapter= get_chapter(stringArgs);
+		
+		/* 장절 검색 */
+
+		tmpA = search_verse(stringArgs);
+
+		try{
+			connectSqlite();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		String mainTitle="";
+		
+		/* 장절 구절 */
+		mainTitle = getTitle();
+		
+		
+		/* 검색어 검색*/
+		is_keyword = isKeyword(stringArgs);
+		if(!is_keyword) {
+			System.out.println(mainTitle);
+		}
+		
+
+		if(!is_keyword&&!is_west)
+		{
+			is_bible = true;
+		}
+		
+		if(is_west)
+		{
+			getWestminster();
+		}
+
+		if(is_keyword){
+			searchKeyword(stringArgs);
+		}
+
+		if(is_bible)
+		{
+			getBible();
+		}
+	}
+	
+	@Override
+	public String get_where(String str)
 	{
 		String retVal="1";
 		String chapter="";
@@ -22,15 +76,14 @@ public class Functions extends Valiables{
 			if(chapter.equals(arrTables[1][i]))
 			{
 				retVal=String.valueOf(i);;
-				this.strBookIndexFullName=arrTables[0][i];
+				strBookIndexFullName=arrTables[0][i];
 			}
 		}
 		return retVal;
 	}
 
-
-	
-	String get_version(String[] args)
+	@Override
+	public String get_version(String[] args)
 	{
 		String retVal="KORNKRV.sqlite";
 
@@ -68,19 +121,20 @@ public class Functions extends Valiables{
 
 			if(retVal==null){
 				retVal="KORNKRV.sqlite";
-			}else{
-//				args[0]=args[0].replaceAll(key, "");
 			}
+
 		}catch(ArrayIndexOutOfBoundsException e){
 		/*개역개정*/
 		retVal="KORNKRV.sqlite";
+		return retVal; 
 		}
 		return retVal; 
 	}
 	
 
 
-	String get_version_name(String[] args)
+	@Override
+	public String get_version_name(String[] args)
 	{
 		String originVal="개역개정";
 		String retVal="개역개정";
@@ -115,35 +169,41 @@ public class Functions extends Valiables{
 		/* Greek */
 		bibleMap.put("gr" ,"Greek");
 		
-			retVal=bibleMap.get(key);
-			if(retVal==null) {
-				retVal= originVal;
-			}else if(!originVal.equals(retVal)) {
-				stringArgs = removeFirstElement(args);
-			}
+		retVal=bibleMap.get(key);
+		if(retVal==null) {
+			retVal= originVal;
+		}else if(!originVal.equals(retVal)) {
+			stringArgs = removeFirstElement(args);
+		}
+
 		}catch(ArrayIndexOutOfBoundsException e){
 		/*개역개정*/
 		retVal="개역개정";
 		}
 		return retVal; 
 	}
-	
-	public static String[] removeFirstElement(String[] arr) {
-	        return Arrays.copyOfRange(arr, 1, arr.length);
-		}
-	
-	String get_chapter(String[] args)
+
+	@Override
+	public String[] removeFirstElement(String[] arr) 
 	{
-		String retVal="1";
+	    return Arrays.copyOfRange(arr, 1, arr.length);
+	}
+	
+	@Override
+	public String get_chapter(String[] args)
+	{
+		String retVal = "1";
 		try{
-		retVal=args[0].replaceAll(FIND_PATTERN, "$2");
+			retVal=args[0].replaceAll(FIND_PATTERN, "$2");
 		}catch(ArrayIndexOutOfBoundsException e){
+			e.printStackTrace();
 		}
 		return retVal;
 	}
 	
 	//장:절 검색
-	String search_verse(String[] args)
+	@Override
+	public String search_verse(String[] args)
 	{
 		String retVal="";
 		if (args.length == 1) {
@@ -203,7 +263,8 @@ public class Functions extends Valiables{
 	/* iskeyword
 	키워드인지 구분
 	*/
-	boolean isKeyword(String[] args)
+	@Override
+	public boolean isKeyword(String[] args)
 	{
 		boolean isKeywordSearch=false;
 		String searchKeyWord1="", searchKeyWord2="", searchKeyWord3="", searchKeyWord4="";	
@@ -270,7 +331,8 @@ public class Functions extends Valiables{
 	/**
 	 * 
 	 */
-	public static void showUsage() {
+	@Override
+	public void showUsage() {
 		System.out.println("성경 요절이나 성구의 키워드만 넣으면 검색이 됩니다.");
 		System.out.println("");
 		System.out.println("java  -cp \".;c:\\Bible\\sqlite-jdbc-3.16.1.jar\" Program[성경버전성경이름 or 약어 이름][경로 장[:]절]");
@@ -300,8 +362,9 @@ public class Functions extends Valiables{
 		System.out.println("사용예21[웨스터민스터 신앙고백서 1장1항]:java Program 웨1:1 ");
 
 	}	
-
-	public static void searchKeyword(String[] args) throws SQLException {
+	
+	@Override
+	public void searchKeyword(String[] args) throws SQLException {
 		String sql;
 		String searchstr="";
 		Statement statement = getStatement();
@@ -332,7 +395,8 @@ public class Functions extends Valiables{
 		System.out.println("총 검색 결과 "+i+"개가 검색 되었습니다.");
 	}
 	
-	public static void getBible() throws SQLException {
+	@Override
+	public void getBible() throws SQLException {
 		String sql;
 		Connection connection = getConnection();
 		Statement statement = getStatement();
@@ -382,7 +446,8 @@ public class Functions extends Valiables{
 		connection.close();
 	}
 
-	public static void getWestminster() throws SQLException {
+	@Override
+	public void getWestminster() throws SQLException {
 		
 		Connection connection = getConnection(); 
 		Statement statement = getStatement();
@@ -399,15 +464,13 @@ public class Functions extends Valiables{
 		
 		while(rs.next())
 		{
+			String wm_subject = rs.getString("wm_subject");
+			String content = rs.getString("wm_content");
 
-			String  wm_subject = rs.getString("wm_subject");
-			String  content = rs.getString("wm_content");
-
-			 System.out.println("제 "+chapter+"장 "+start_a_verse+"항");
-			 System.out.println(wm_subject);
-			 System.out.print(content);
-			 System.out.println();
-			
+			System.out.println("제 "+chapter+"장 "+start_a_verse+"항");
+			System.out.println(wm_subject);
+			System.out.print(content);
+			System.out.println();
 		}
 		/* resultSet 닫기 */
 		rs.close();
@@ -415,21 +478,31 @@ public class Functions extends Valiables{
 		connection.close();
 	}
 	
-	public static String getTitle(Functions ft) throws SQLException {
+	@Override
+	public String getTitle() throws SQLException {
 		String mainTitle;
 		String sql;
+		
 		Valiables bv = new Valiables();
 		Statement statement = bv.getStatement();
+
 		if(end_of_verse.equals("999")){
 			if(version_name.equals("Hebrew"))
 			{
-
-			sql="select c1content as content,c6verse_no as verse from bible_hebrew where c4book_no='"+book+"' and c5chapter_no='"+chapter+"' order by c6verse_no desc limit 1;";
+				sql="select ";
+				sql+="		c1content as content,";
+				sql+="		c6verse_no as verse ";
+				sql+="	from ";
+				sql+="		bible_hebrew ";
+				sql+="			where c4book_no='";
+				sql+=book+"' and c5chapter_no='";
+				sql+=chapter+"' order by c6verse_no desc limit 1;";
 			}else if(version_name.equals("Greek")){
-			sql="select c1content as content,c6verse_no as verse from bible_greek where c4book_no='"+book+"' and c5chapter_no='"+chapter+"' order by c6verse_no desc limit 1;";
+				sql="select c1content as content,c6verse_no as verse from bible_greek where c4book_no='"+book+"' and c5chapter_no='"+chapter+"' order by c6verse_no desc limit 1;";
 			}else{
-			sql="select verse from bible where book='"+book+"' and chapter='"+chapter+"' order by verse desc limit 1;";
+				sql="select verse from bible where book='"+book+"' and chapter='"+chapter+"' order by verse desc limit 1;";
 			}
+
 			ResultSet rsv=statement.executeQuery(sql);
 			while(rsv.next())
 			{
@@ -437,17 +510,19 @@ public class Functions extends Valiables{
 			}
 			/* resultSet 닫기 */
 			rsv.close();
-		    mainTitle=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";	
+		    mainTitle=strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";	
 		}else if(start_a_verse.equals(end_of_verse)){
 			/* 1절 검색 */
-			mainTitle=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"절 ["+version_name+"]";
+			mainTitle=strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"절 ["+version_name+"]";
 		}else{
-			mainTitle=ft.strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";
+			mainTitle=strBookIndexFullName+" "+chapter+"장 "+start_a_verse+"~"+end_of_verse+"절 ["+version_name+"]";
 		}
 		return mainTitle;
 	}	
 
-	public static void connectSqlite(Functions ft) throws IOException, SQLException {
+	@Override
+	public void connectSqlite() throws IOException, SQLException 
+	{
 		Valiables bv = new Valiables();
 		strBookIndexName = tmpA.replaceAll(FIND_PATTERN, "$1");
 		
@@ -456,7 +531,7 @@ public class Functions extends Valiables{
 
 		searchStr1 = strBookIndexName;
 		// tmpA.replaceAll(FIND_PATTERN,"$1");
-		book=ft.get_where(searchStr1);
+		book=get_where(searchStr1);
 		
 		is_west=searchStr1.equals("웨");  
 		/**/
@@ -464,7 +539,10 @@ public class Functions extends Valiables{
 		{
 			version_filename="WESTMIN.sqlite";
 			version_name="웨스터민스터 신앙고백서";
+		}else{
+			version_filename="KORNKRV.sqlite";
 		}
+
 		chapter = tmpA.replaceAll(FIND_PATTERN, "$2");
 		start_a_verse = tmpA.replaceAll(FIND_PATTERN, "$3");
 		end_of_verse = tmpA.replaceAll(FIND_PATTERN, "$4");
@@ -486,8 +564,6 @@ public class Functions extends Valiables{
 //	     connection = DriverManager.getConnection("jdbc:sqlite:"+location+"/KORTKV.db");
 	    
 		Valiables.setConnection(DriverManager.getConnection("jdbc:sqlite:"+location+"/db/"+version_filename));
-			
-
 		
 		/* 연결 성공했을 때, connection으로부터 statement 인스턴스를 얻습니다. 여기서 SQL 구문을 수행합니다. */
 		try {
