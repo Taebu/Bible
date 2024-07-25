@@ -99,7 +99,7 @@ import java.sql.Statement;
 	public static String strBookIndexFullName="";
 	public static String strBookIndexChapter="";
 
-	private static Connection connection = null;
+	public static Connection connection = null;
 	public static Connection getConnection() {
 		return connection;
 	}
@@ -108,7 +108,7 @@ import java.sql.Statement;
 		Valiables.connection = connection;
 	}
 	
-	private static Statement statement = null;
+	public static Statement statement = null;
 
 	public static Statement getStatement() {
 		return statement;
@@ -123,13 +123,15 @@ import java.sql.Statement;
 	public static String version;
 	
 	public static String version_name;
+	public static String version_filename;
 	
 	public static String book="";
 
 	public static String s = "";
 	public static String searchStr1="",chapter="",start_a_verse="",end_of_verse="";
 	public static boolean is_west=false;		
-	
+	public static boolean is_bible=false;		
+	public static boolean is_keyword=false;		
 	public static String tmpA="";
 	
 	public static String[] stringArgs;
