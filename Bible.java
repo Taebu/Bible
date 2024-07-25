@@ -4,39 +4,25 @@ public class Bible extends Valiables
 {
 	public static void main(String[] args) throws Exception
 	{
-		Functions ft = new Functions();
-		version = ft.get_version(args);
-		version_name=ft.get_version_name(args);
-		chapter=ft.get_chapter(stringArgs);
-				
-		/* 장절 검색 */
-		tmpA=ft.search_verse(stringArgs);
+		String[] tempStrings = new String[1];
+		String[] commaArgs;
+		if (args.length == 1&&args[0].indexOf(",")>-1) {
+			commaArgs = args[0].split(",");
 
-		ft.connectSqlite(ft);
+			for (int i =0;i<commaArgs.length ; i++) {
+				tempStrings[0]= commaArgs[i];
+				new Functions(tempStrings);
+			}
+			System.exit(0);
 
-		String mainTitle="";
-		
-		/* 장절 구절 */
-		mainTitle = ft.getTitle(ft);
-		
-		
-		/* 검색어 검색*/
-		if(ft.isKeyword(stringArgs)){
-			ft.searchKeyword(stringArgs);
-		}else {
-			System.out.println(mainTitle);
+		}else if(args.length == 1)
+		{	
+			new Functions(args);
+		}else if(args.length>1){
+			for (int i =0;i<args.length ; i++) {
+				tempStrings[0]= args[i];
+				new Functions(tempStrings);
+			}
 		}
-		
-
-		if(is_west)
-		{
-			ft.getWestminster();
-		}
-
-		if(!is_west)
-		{
-			ft.getBible();
-		}
-  }
-
+    }
 }
